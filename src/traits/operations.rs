@@ -269,10 +269,12 @@ impl<'a, N, T: ApproxEq<N>> ApproxEq<N> for &'a mut T {
 
 /// Trait of objects having an absolute value.
 /// This is useful if the object does not have the same type as its absolute value.
-pub trait Absolute<A> {
+pub trait Absolute {
+    type AbsoluteValueType;
+
     /// Computes some absolute value of this object.
     /// Typically, this will make all component of a matrix or vector positive.
-    fn abs(&Self) -> A;
+    fn abs(&Self) -> Self::AbsoluteValueType;
 }
 
 /// Trait of objects having an inverse. Typically used to implement matrix inverse.
@@ -285,9 +287,11 @@ pub trait Inv {
 }
 
 /// Trait of objects having a determinant. Typically used by square matrices.
-pub trait Det<N> {
+pub trait Det {
+    type DeterminantType;
+
     /// Returns the determinant of `m`.
-    fn det(&self) -> N;
+    fn det(&self) -> Self::DeterminantType;
 }
 
 /// Trait of objects which can be transposed.
@@ -300,39 +304,45 @@ pub trait Transpose {
 }
 
 /// Traits of objects having an outer product.
-pub trait Outer<M> {
+pub trait Outer {
+    type OuterProductType;
+
     /// Computes the outer product: `a * b`
-    fn outer(&self, other: &Self) -> M;
+    fn outer(&self, other: &Self) -> Self::OuterProductType;
 }
 
 /// Trait for computing the covariance of a set of data.
-pub trait Cov<M> {
-    /// Computes the covariance of the obsevations stored by `m`:
-    ///
-    ///   * For matrices, observations are stored in its rows.
-    ///   * For vectors, observations are stored in its components (thus are 1-dimensional).
-    fn cov(&self) -> M;
+pub trait Cov {
+    type CovarianceMatrixType;
 
     /// Computes the covariance of the obsevations stored by `m`:
     ///
     ///   * For matrices, observations are stored in its rows.
     ///   * For vectors, observations are stored in its components (thus are 1-dimensional).
-    fn cov_to(&self, out: &mut M) {
+    fn cov(&self) -> Self::CovarianceMatrixType;
+
+    /// Computes the covariance of the obsevations stored by `m`:
+    ///
+    ///   * For matrices, observations are stored in its rows.
+    ///   * For vectors, observations are stored in its components (thus are 1-dimensional).
+    fn cov_to(&self, out: &mut Self::CovarianceMatrixType) {
         *out = self.cov()
     }
 }
 
-/// Trait for computing the covariance of a set of data.
-pub trait Mean<N> {
+/// Trait for computing the mean of a set of data.
+pub trait Mean {
+    type MeanValueType;
+
     /// Computes the mean of the observations stored by `v`.
     /// 
     ///   * For matrices, observations are stored in its rows.
     ///   * For vectors, observations are stored in its components (thus are 1-dimensional).
-    fn mean(&self) -> N;
+    fn mean(&self) -> Self::MeanValueType;
 }
 
 /// Trait for computing the eigenvector and eigenvalues of a square matrix usin the QR algorithm.
-pub trait EigenQR<N, V>: SquareMat<N, V> {
+pub trait EigenQR<N, V>: SquareMat {
     /// Computes the eigenvectors and eigenvalues of this matrix.
     fn eigen_qr(&self, eps: &N, niter: usize) -> (Self, V);
 }
@@ -415,7 +425,9 @@ pub trait Axpy<N> {
 // FIXME: move this to another module ?
 macro_rules! impl_absolute(
     ($n: ty) => {
-        impl Absolute<$n> for $n {
+        impl Absolute for $n {
+            type AbsoluteValueType = $n;
+
             #[inline]
             fn abs(n: &$n) -> $n {
                 n.abs()
@@ -425,7 +437,8 @@ macro_rules! impl_absolute(
 );
 macro_rules! impl_absolute_id(
     ($n: ty) => {
-        impl Absolute<$n> for $n {
+        impl Absolute for $n {
+            type AbsoluteValueType = $n;
             #[inline]
             fn abs(n: &$n) -> $n {
                 *n
