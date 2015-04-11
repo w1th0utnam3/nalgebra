@@ -109,7 +109,9 @@ impl<N: BaseFloat + ApproxEq<N>> Inv for Quat<N> {
     }
 }
 
-impl<N: BaseFloat> Norm<N> for Quat<N> {
+impl<N: BaseFloat> Norm for Quat<N> {
+    type NormType = N;
+
     #[inline]
     fn sqnorm(&self) -> N {
         self.w * self.w + self.i * self.i + self.j * self.j + self.k * self.k
@@ -387,7 +389,9 @@ impl<N: BaseNum + Neg<Output = N>> Mul<UnitQuat<N>> for Pnt3<N> {
     }
 }
 
-impl<N: BaseFloat> Rotation<Vec3<N>> for UnitQuat<N> {
+impl<N: BaseFloat> Rotation for UnitQuat<N> {
+    type RotationType =  Vec3<N>;
+
     #[inline]
     fn rotation(&self) -> Vec3<N> {
         let _2 = ::one::<N>() + ::one();

@@ -60,23 +60,23 @@ pub trait Cast<T> {
 /// Trait of matrices.
 ///
 /// A matrix has rows and columns and are able to multiply them.
-pub trait Mat: Row + Col + RMul<<Self as Row>::Row> + LMul<<Self as Col>::Column> + Index<(usize, usize)> {
+pub trait Mat: Row + Col + RMul<<Self as Row>::RowType> + LMul<<Self as Col>::ColumnType> + Index<(usize, usize)> {
     type ScalarType = Self::Output;
 }
 
 impl<M> Mat for M
-where M: Row + Col + RMul<<M as Row>::Row> + LMul<<M as Col>::Column> + Index<(usize, usize)>,
+where M: Row + Col + RMul<<M as Row>::RowType> + LMul<<M as Col>::ColumnType> + Index<(usize, usize)>,
       M::Output : Sized {
     type ScalarType = M::Output;
 }
 
 /// Trait implemented by square matrices.
-pub trait SquareMat: Diag + Mat<Row = <Self as Diag>::DiagonalType, Column = <Self as Diag>::DiagonalType> +
+pub trait SquareMat: Diag + Mat<RowType = <Self as Diag>::DiagonalType, ColumnType = <Self as Diag>::DiagonalType> +
                      Mul<Self, Output = Self> + Eye + Transpose + Diag + Dim + One {
 }
 
 impl<M> SquareMat for M
-    where M: Diag + Mat<Row = <M as Diag>::DiagonalType, Column = <M as Diag>::DiagonalType> +
+    where M: Diag + Mat<RowType = <M as Diag>::DiagonalType, ColumnType = <M as Diag>::DiagonalType> +
              Mul<M, Output = M> + Eye + Transpose + Diag + Inv + Dim + One {
 }
 
@@ -111,14 +111,14 @@ pub trait Basis {
 
 /// Trait to access rows of a matrix or a vector.
 pub trait Row {
-    type Row;
+    type RowType;
 
     /// The number of column of `self`.
     fn nrows(&self) -> usize;
     /// Reads the `i`-th row of `self`.
-    fn row(&self, i: usize) -> Self::Row;
+    fn row(&self, i: usize) -> Self::RowType;
     /// Writes the `i`-th row of `self`.
-    fn set_row(&mut self, i: usize, row: Self::Row);
+    fn set_row(&mut self, i: usize, row: Self::RowType);
 
     // FIXME: add iterators on rows: this could be a very good way to generalize _and_ optimize
     // a lot of operations.
@@ -126,16 +126,16 @@ pub trait Row {
 
 /// Trait to access columns of a matrix or vector.
 pub trait Col {
-    type Column;
+    type ColumnType;
 
     /// The number of column of this matrix or vector.
     fn ncols(&self) -> usize;
 
     /// Reads the `i`-th column of `self`.
-    fn col(&self, i: usize) -> Self::Column;
+    fn col(&self, i: usize) -> Self::ColumnType;
 
     /// Writes the `i`-th column of `self`.
-    fn set_col(&mut self, i: usize, Self::Column);
+    fn set_col(&mut self, i: usize, Self::ColumnType);
 
     // FIXME: add iterators on columns: this could be a very good way to generalize _and_ optimize
     // a lot of operations.
@@ -143,18 +143,18 @@ pub trait Col {
 
 /// Trait to access part of a column of a matrix
 pub trait ColSlice {
-    type ColSlice;
+    type ColSliceType;
 
     /// Returns a view to a slice of a column of a matrix.
-    fn col_slice(&self, col_id: usize, row_start: usize, row_end: usize) -> Self::ColSlice;
+    fn col_slice(&self, col_id: usize, row_start: usize, row_end: usize) -> Self::ColSliceType;
 }
 
 /// Trait to access part of a row of a matrix
 pub trait RowSlice {
-    type RowSlice;
+    type RowSliceType;
 
     /// Returns a view to a slice of a row of a matrix.
-    fn row_slice(&self, row_id: usize, col_start: usize, col_end: usize) -> Self::RowSlice;
+    fn row_slice(&self, row_id: usize, col_start: usize, col_end: usize) -> Self::RowSliceType;
 }
 
 /// Trait of objects having a spacial dimension known at compile time.
@@ -216,10 +216,10 @@ pub trait Iterable {
 ///
 /// Traits of mutable objects which can be iterated through like a vector.
 pub trait IterableMut {
-    type Item;
+    type ItemMut;
 
     /// Gets a vector-like read-write iterator.
-    fn iter_mut<'l>(&'l mut self) -> IterMut<'l, Self::Item>;
+    fn iter_mut<'l>(&'l mut self) -> IterMut<'l, Self::ItemMut>;
 }
 
 /*

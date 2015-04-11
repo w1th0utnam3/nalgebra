@@ -1,7 +1,7 @@
 //! Traits of operations having a well-known or explicit geometric meaning.
 
 use std::ops::Neg;
-use std::num::Float;
+use num::Float;
 use traits::structure::{BaseFloat, Mat};
 
 /// Trait of object which represent a translation, and to wich new translation

@@ -45,7 +45,7 @@ impl<N> Shape<usize> for vec::Vec0<N> {
     }
 }
 
-impl<N> Indexable<usize, N> for vec::Vec0<N> {
+impl<N> Indexable<usize> for vec::Vec0<N> {
     #[inline]
     fn swap(&mut self, _: usize, _: usize) {
     }
@@ -60,14 +60,18 @@ impl<N> Indexable<usize, N> for vec::Vec0<N> {
     }
 }
 
-impl<N: 'static> Iterable<N> for vec::Vec0<N> {
+impl<N: 'static> Iterable for vec::Vec0<N> {
+    type Item = N;
+
     #[inline]
     fn iter<'l>(&'l self) -> Iter<'l, N> {
         unsafe { mem::transmute::<&'l vec::Vec0<N>, &'l [N; 0]>(self).iter() }
     }
 }
 
-impl<N: 'static> IterableMut<N> for vec::Vec0<N> {
+impl<N: 'static> IterableMut for vec::Vec0<N> {
+    type ItemMut = N;
+
     #[inline]
     fn iter_mut<'l>(&'l mut self) -> IterMut<'l, N> {
         unsafe { mem::transmute::<&'l mut vec::Vec0<N>, &'l mut [N; 0]>(self).iter_mut() }
@@ -121,7 +125,9 @@ impl<N: Neg<Output = N> + Copy> Neg for vec::Vec0<N> {
     }
 }
 
-impl<N: BaseNum> Dot<N> for vec::Vec0<N> {
+impl<N: BaseNum> Dot for vec::Vec0<N> {
+    type DotProductType = N;
+
     #[inline]
     fn dot(&self, _: &vec::Vec0<N>) -> N {
         ::zero()
@@ -146,7 +152,9 @@ impl<N, T> Div<T> for vec::Vec0<N> {
     }
 }
 
-impl<N: Copy + Add<N, Output = N> + Neg<Output = N>> Translation<vec::Vec0<N>> for vec::Vec0<N> {
+impl<N: Copy + Add<N, Output = N> + Neg<Output = N>> Translation for vec::Vec0<N> {
+    type TranslationType = vec::Vec0<N>;
+
     #[inline]
     fn translation(&self) -> vec::Vec0<N> {
         *self
@@ -182,7 +190,9 @@ impl<N: Copy + Add<N, Output = N> + Neg<Output = N>> Translation<vec::Vec0<N>> f
     }
 }
 
-impl<N: BaseFloat> Norm<N> for vec::Vec0<N> {
+impl<N: BaseFloat> Norm for vec::Vec0<N> {
+    type NormType = N;
+
     #[inline]
     fn sqnorm(&self) -> N {
         ::zero()

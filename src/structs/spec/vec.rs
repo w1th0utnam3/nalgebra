@@ -6,7 +6,7 @@ use structs::vec::{Vec1, Vec2, Vec3, Vec4};
 use structs::mat::Mat3;
 
 impl<N: Copy + Mul<N, Output = N> + Sub<N, Output = N>> Cross for Vec2<N> {
-    type Output = Vec1<N>;
+    type CrossProductType = Vec1<N>;
 
     #[inline]
     fn cross(&self, other: &Vec2<N>) -> Vec1<N> {
@@ -15,7 +15,9 @@ impl<N: Copy + Mul<N, Output = N> + Sub<N, Output = N>> Cross for Vec2<N> {
 }
 
 // FIXME: instead of returning a Vec2, define a Mat2x1 matrix?
-impl<N: Neg<Output = N> + Copy> CrossMatrix<Vec2<N>> for Vec2<N> {
+impl<N: Neg<Output = N> + Copy> CrossMatrix for Vec2<N> {
+    type CrossMatrixFormType = Vec2<N>;
+
     #[inline]
     fn cross_matrix(&self) -> Vec2<N> {
         Vec2::new(-self.y, self.x)
@@ -23,7 +25,7 @@ impl<N: Neg<Output = N> + Copy> CrossMatrix<Vec2<N>> for Vec2<N> {
 }
 
 impl<N: Copy + Mul<N, Output = N> + Sub<N, Output = N>> Cross for Vec3<N> {
-    type Output = Vec3<N>;
+    type CrossProductType = Vec3<N>;
 
     #[inline]
     fn cross(&self, other: &Vec3<N>) -> Vec3<N> {
@@ -35,7 +37,9 @@ impl<N: Copy + Mul<N, Output = N> + Sub<N, Output = N>> Cross for Vec3<N> {
     }
 }
 
-impl<N: Neg<Output = N> + Zero + Copy> CrossMatrix<Mat3<N>> for Vec3<N> {
+impl<N: Neg<Output = N> + Zero + Copy> CrossMatrix for Vec3<N> {
+    type CrossMatrixFormType = Mat3<N>;
+
     #[inline]
     fn cross_matrix(&self) -> Mat3<N> {
         Mat3::new(
@@ -47,7 +51,8 @@ impl<N: Neg<Output = N> + Zero + Copy> CrossMatrix<Mat3<N>> for Vec3<N> {
 }
 
 // FIXME: implement this for all other vectors
-impl<N: Copy> Row<Vec1<N>> for Vec2<N> {
+impl<N: Copy> Row for Vec2<N> {
+    type RowType = Vec1<N>;
     #[inline]
     fn nrows(&self) -> usize {
         2

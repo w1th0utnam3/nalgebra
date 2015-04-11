@@ -79,9 +79,9 @@ macro_rules! dim_impl(
 );
 
 macro_rules! rotation_matrix_impl(
-    ($t: ident, $tlv: ident, $tav: ident) => (
-        impl<N: Zero + BaseNum + Cast<f64> + BaseFloat> RotationMatrix<N, $tlv<N>, $tav<N>> for $t<N> {
-            type Output = $t<N>;
+    ($t: ident) => (
+        impl<N: BaseFloat> RotationMatrix for $t<N> {
+            type RotationMatrixType = $t<N>;
 
             #[inline]
             fn to_rot_mat(&self) -> $t<N> {
@@ -191,7 +191,9 @@ macro_rules! transpose_impl(
 
 macro_rules! row_impl(
     ($t: ident, $tv: ident) => (
-        impl<N: Copy + Zero> Row<$tv<N>> for $t<N> {
+        impl<N: Copy + Zero> Row for $t<N> {
+            type RowType = $tv<N>;
+
             #[inline]
             fn nrows(&self) -> usize {
                 self.submat.nrows()
@@ -211,7 +213,9 @@ macro_rules! row_impl(
 
 macro_rules! col_impl(
     ($t: ident, $tv: ident) => (
-        impl<N: Copy + Zero> Col<$tv<N>> for $t<N> {
+        impl<N: Copy + Zero> Col for $t<N> {
+            type ColumnType = $tv<N>;
+
             #[inline]
             fn ncols(&self) -> usize {
                 self.submat.ncols()
@@ -243,7 +247,9 @@ macro_rules! index_impl(
 
 macro_rules! to_homogeneous_impl(
     ($t: ident, $tm: ident) => (
-        impl<N: BaseNum> ToHomogeneous<$tm<N>> for $t<N> {
+        impl<N: BaseNum> ToHomogeneous for $t<N> {
+            type HomogeneousFormType = $tm<N>;
+
             #[inline]
             fn to_homogeneous(&self) -> $tm<N> {
                 self.submat.to_homogeneous()
@@ -285,9 +291,11 @@ macro_rules! approx_eq_impl(
 
 macro_rules! absolute_impl(
     ($t: ident, $tm: ident) => (
-        impl<N: Absolute<N>> Absolute<$tm<N>> for $t<N> {
+        impl<N: Absolute> Absolute for $t<N> {
+            type AbsoluteValueType = $tm<N::AbsoluteValueType>;
+
             #[inline]
-            fn abs(m: &$t<N>) -> $tm<N> {
+            fn abs(m: &$t<N>) -> $tm<N::AbsoluteValueType> {
                 Absolute::abs(&m.submat)
             }
         }

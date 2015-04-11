@@ -34,7 +34,9 @@ impl<N: Clone + BaseFloat + Neg<Output = N>> Rot2<N> {
     }
 }
 
-impl<N: BaseFloat + Clone> Rotation<Vec1<N>> for Rot2<N> {
+impl<N: BaseFloat + Clone> Rotation for Rot2<N> {
+    type RotationType = Vec1<N>;
+
     #[inline]
     fn rotation(&self) -> Vec1<N> {
         Vec1::new((-self.submat.m12).atan2(self.submat.m11.clone()))
@@ -218,8 +220,9 @@ impl<N: Clone + BaseFloat> Rot3<N> {
     }
 }
 
-impl<N: Clone + BaseFloat + Cast<f64>>
-Rotation<Vec3<N>> for Rot3<N> {
+impl<N: BaseFloat> Rotation for Rot3<N> {
+    type RotationType = Vec3<N>;
+
     #[inline]
     fn rotation(&self) -> Vec3<N> {
         let angle = ((self.submat.m11 + self.submat.m22 + self.submat.m33 - ::one()) / Cast::from(2.0)).acos();
@@ -355,8 +358,9 @@ impl<N: BaseFloat> AbsoluteRotate<Vec4<N>> for Rot4<N> {
     }
 }
 
-impl<N: BaseFloat + Clone>
-Rotation<Vec4<N>> for Rot4<N> {
+impl<N: BaseFloat> Rotation for Rot4<N> {
+    type RotationType = Vec4<N>;
+
     #[inline]
     fn rotation(&self) -> Vec4<N> {
         panic!("Not yet implemented")
@@ -408,7 +412,7 @@ vec_mul_rot_impl!(Rot2, Vec2);
 rot_mul_pnt_impl!(Rot2, Pnt2);
 pnt_mul_rot_impl!(Rot2, Pnt2);
 one_impl!(Rot2);
-rotation_matrix_impl!(Rot2, Vec2, Vec1);
+rotation_matrix_impl!(Rot2);
 col_impl!(Rot2, Vec2);
 row_impl!(Rot2, Vec2);
 index_impl!(Rot2);
@@ -428,7 +432,7 @@ vec_mul_rot_impl!(Rot3, Vec3);
 rot_mul_pnt_impl!(Rot3, Pnt3);
 pnt_mul_rot_impl!(Rot3, Pnt3);
 one_impl!(Rot3);
-rotation_matrix_impl!(Rot3, Vec3, Vec3);
+rotation_matrix_impl!(Rot3);
 col_impl!(Rot3, Vec3);
 row_impl!(Rot3, Vec3);
 index_impl!(Rot3);
@@ -448,7 +452,7 @@ vec_mul_rot_impl!(Rot4, Vec4);
 rot_mul_pnt_impl!(Rot4, Pnt4);
 pnt_mul_rot_impl!(Rot4, Pnt4);
 one_impl!(Rot4);
-rotation_matrix_impl!(Rot4, Vec4, Vec4);
+rotation_matrix_impl!(Rot4);
 col_impl!(Rot4, Vec4);
 row_impl!(Rot4, Vec4);
 index_impl!(Rot4);

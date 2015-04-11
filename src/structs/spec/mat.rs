@@ -105,21 +105,27 @@ impl<N: BaseNum + Neg<Output = N> + ApproxEq<N>> Inv for Mat3<N> {
     }
 }
 
-impl<N: BaseNum> Det<N> for Mat1<N> {
+impl<N: BaseNum> Det for Mat1<N> {
+    type DeterminantType = N;
+
     #[inline]
     fn det(&self) -> N {
         self.m11
     }
 }
 
-impl<N: BaseNum> Det<N> for Mat2<N> {
+impl<N: BaseNum> Det for Mat2<N> {
+    type DeterminantType = N;
+
     #[inline]
     fn det(&self) -> N {
         self.m11 * self.m22 - self.m21 * self.m12
     }
 }
 
-impl<N: BaseNum> Det<N> for Mat3<N> {
+impl<N: BaseNum> Det for Mat3<N> {
+    type DeterminantType = N;
+
     #[inline]
     fn det(&self) -> N {
         let minor_m12_m23 = self.m22 * self.m33 - self.m32 * self.m23;
@@ -130,7 +136,9 @@ impl<N: BaseNum> Det<N> for Mat3<N> {
     }
 }
 
-impl<N: Copy> Row<Vec3<N>> for Mat3<N> {
+impl<N: Copy> Row for Mat3<N> {
+    type RowType = Vec3<N>;
+
     #[inline]
     fn nrows(&self) -> usize {
         3
@@ -170,7 +178,9 @@ impl<N: Copy> Row<Vec3<N>> for Mat3<N> {
     }
 }
 
-impl<N: Copy> Col<Vec3<N>> for Mat3<N> {
+impl<N: Copy> Col for Mat3<N> {
+    type ColumnType = Vec3<N>;
+
     #[inline]
     fn ncols(&self) -> usize {
         3

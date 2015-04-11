@@ -82,7 +82,9 @@ macro_rules! pnt_as_vec_impl(
             }
         }
 
-        impl<N> PntAsVec<$tv<N>> for $t<N> {
+        impl<N> PntAsVec for $t<N> {
+            type VectorType = $tv<N>;
+
             #[inline]
             fn to_vec(self) -> $tv<N> {
                 self.to_vec()
@@ -103,7 +105,9 @@ macro_rules! pnt_as_vec_impl(
 
 macro_rules! pnt_to_homogeneous_impl(
     ($t: ident, $t2: ident, $extra: ident, $($compN: ident),+) => (
-        impl<N: Copy + One + Zero> ToHomogeneous<$t2<N>> for $t<N> {
+        impl<N: Copy + One + Zero> ToHomogeneous for $t<N> {
+            type HomogeneousFormType = $t2<N>;
+
             fn to_homogeneous(&self) -> $t2<N> {
                 let mut res: $t2<N> = Orig::orig();
 
@@ -132,12 +136,11 @@ macro_rules! pnt_from_homogeneous_impl(
 
 macro_rules! num_float_pnt_impl(
     ($t: ident, $tv: ident) => (
-        impl<N> NumPnt<N, $tv<N>> for $t<N>
-            where N: BaseNum {
+        impl<N: BaseNum> NumPnt for $t<N> {
+            type ScalarType = N;
         }
 
-        impl<N> FloatPnt<N, $tv<N>> for $t<N>
-            where N: BaseFloat + ApproxEq<N> {
+        impl<N: BaseFloat + ApproxEq<N>> FloatPnt for $t<N> {
         }
     )
 );

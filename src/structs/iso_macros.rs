@@ -25,10 +25,9 @@ macro_rules! iso_impl(
 );
 
 macro_rules! rotation_matrix_impl(
-    ($t: ident, $trot: ident, $tlv: ident, $tav: ident) => (
-        impl<N: Cast<f64> + BaseFloat>
-        RotationMatrix<N, $tlv<N>, $tav<N>> for $t<N> {
-            type Output = $trot<N>;
+    ($t: ident, $trot: ident) => (
+        impl<N: BaseFloat> RotationMatrix for $t<N> {
+            type RotationMatrixType = $trot<N>;
 
             #[inline]
             fn to_rot_mat(&self) -> $trot<N> {
@@ -103,7 +102,9 @@ macro_rules! pnt_mul_iso_impl(
 
 macro_rules! translation_impl(
     ($t: ident, $tv: ident) => (
-        impl<N: BaseFloat> Translation<$tv<N>> for $t<N> {
+        impl<N: BaseFloat> Translation for $t<N> {
+            type TranslationType = $tv<N>;
+
             #[inline]
             fn translation(&self) -> $tv<N> {
                 self.translation
@@ -160,7 +161,9 @@ macro_rules! translate_impl(
 
 macro_rules! rotation_impl(
     ($t: ident, $trot: ident, $tav: ident) => (
-        impl<N: Cast<f64> + BaseFloat> Rotation<$tav<N>> for $t<N> {
+        impl<N: BaseFloat> Rotation for $t<N> {
+            type RotationType = $tav<N>;
+
             #[inline]
             fn rotation(&self) -> $tav<N> {
                 self.rotation.rotation()
@@ -227,7 +230,9 @@ macro_rules! rotate_impl(
 
 macro_rules! transformation_impl(
     ($t: ident) => (
-        impl<N: BaseFloat> Transformation<$t<N>> for $t<N> {
+        impl<N: BaseFloat> Transformation for $t<N> {
+            type TransformationType = $t<N>;
+
             fn transformation(&self) -> $t<N> {
                 *self
             }
@@ -300,7 +305,9 @@ macro_rules! inv_impl(
 
 macro_rules! to_homogeneous_impl(
     ($t: ident, $th: ident) => (
-        impl<N: BaseNum> ToHomogeneous<$th<N>> for $t<N> {
+        impl<N: BaseNum> ToHomogeneous for $t<N> {
+            type HomogeneousFormType = $th<N>;
+
             fn to_homogeneous(&self) -> $th<N> {
                 let mut res = self.rotation.to_homogeneous();
 

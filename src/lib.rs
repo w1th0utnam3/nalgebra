@@ -147,7 +147,6 @@ pub use traits::{
     UniformSphereSample
 };
 
-/*
 pub use structs::{
     Identity,
     DMat,
@@ -167,11 +166,10 @@ pub use linalg::{
     qr,
     householder_matrix
 };
-*/
 
 mod structs;
 mod traits;
-// mod linalg;
+mod linalg;
 mod macros;
 
 // mod lower_triangular;
@@ -915,7 +913,3 @@ pub fn shape<V: Shape<I>, I>(v: &V) -> I {
 pub fn cast<T, U: Cast<T>>(t: T) -> U {
     Cast::from(t)
 }
-
-/*
- * Indexable
- */

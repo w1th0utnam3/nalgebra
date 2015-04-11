@@ -2,7 +2,8 @@ use traits::operations::{Transpose, ApproxEq};
 use traits::structure::{ColSlice, Eye, Indexable, Diag, SquareMat, BaseFloat};
 use traits::geometry::Norm;
 use std::cmp::min;
-use std::ops::{Mul, Add, Sub};
+use std::ops::{Mul, Add, Sub, Index};
+use num::Float;
 
 /// Get the householder matrix corresponding to a reflexion to the hyperplane
 /// defined by `vec`. It can be a reflexion contained in a subspace.
@@ -11,10 +12,10 @@ use std::ops::{Mul, Add, Sub};
 /// * `dim` - the dimension of the space the resulting matrix operates in
 /// * `start` - the starting dimension of the subspace of the reflexion
 /// * `vec` - the vector defining the reflection.
-pub fn householder_matrix<N, V, M>(dim: usize, start: usize, vec: V) -> M
-    where N: BaseFloat,
-          M: Eye + Indexable<(usize, usize), N>,
-          V: Indexable<usize, N> {
+pub fn householder_matrix<V, M>(dim: usize, start: usize, vec: V) -> M
+    where M::Output: BaseFloat,
+          M: Eye + Indexable<(usize, usize)>,
+          V: Indexable<usize, Output = <M as Index<(usize, usize)>>::Output> {
     let mut qk : M = Eye::new_identity(dim);
     let subdim = vec.shape();
 
@@ -38,11 +39,11 @@ pub fn householder_matrix<N, V, M>(dim: usize, start: usize, vec: V) -> M
 ///
 /// # Arguments
 /// * `m` - matrix to decompose
-pub fn qr<N, V, M>(m: &M) -> (M, M)
-    where N: BaseFloat,
-          V: Indexable<usize, N> + Norm<N>,
-          M: Copy + Eye + ColSlice<V> + Transpose + Indexable<(usize, usize), N> +
-             Mul<M, Output = M> {
+pub fn qr<M>(m: &M) -> (M, M)
+    where M: Copy + Eye + ColSlice + Transpose + Indexable<(usize, usize)> + Mul<M, Output = M>,
+          M::ColSliceType: Indexable<usize, Output = <M as Index<(usize, usize)>>::Output> +
+                           Norm<NormType = <M as Index<(usize, usize)>>::Output>,
+          <M as Index<(usize, usize)>>::Output: BaseFloat {
     let (rows, cols) = m.shape();
     assert!(rows >= cols);
     let mut q : M = Eye::new_identity(rows);
@@ -72,12 +73,12 @@ pub fn qr<N, V, M>(m: &M) -> (M, M)
 }
 
 /// Eigendecomposition of a square matrix using the qr algorithm.
-pub fn eigen_qr<N, V, VS, M>(m: &M, eps: &N, niter: usize) -> (M, V)
-    where N:  BaseFloat,
-          VS: Indexable<usize, N> + Norm<N>,
-          M:  Indexable<(usize, usize), N> + SquareMat<N, V> + Add<M, Output = M> +
-              Sub<M, Output = M> + ColSlice<VS> +
-              ApproxEq<N> + Copy {
+pub fn eigen_qr<M>(m: &M, eps: &<M as Index<(usize, usize)>>::Output, niter: usize) -> (M, M::DiagonalType)
+    where M:  Indexable<(usize, usize)> + SquareMat + Add<M, Output = M> +
+              Sub<M, Output = M> + ColSlice + ApproxEq<<M as Index<(usize, usize)>>::Output> + Copy,
+          M::ColSliceType: Indexable<usize, Output = <M as Index<(usize, usize)>>::Output> +
+                           Norm<NormType = <M as Index<(usize, usize)>>::Output>,
+          <M as Index<(usize, usize)>>::Output: BaseFloat {
     let mut eigenvectors: M = ::one::<M>();
     let mut eigenvalues = *m;
     // let mut shifter: M = Eye::new_identity(rows);
