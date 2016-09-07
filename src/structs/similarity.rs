@@ -16,6 +16,9 @@ use structs::isometry::{Isometry2, Isometry3};
 #[cfg(feature="arbitrary")]
 use quickcheck::{Arbitrary, Gen};
 
+#[cfg(feature="abstract_algebra")]
+use_similarity_group_modules!();
+
 // FIXME: the name is not explicit at all but coherent with the other tree-letters names…
 /// A two-dimensional similarity transformation.
 ///

@@ -6,6 +6,9 @@ macro_rules! similarity_impl(
      $vector: ident, $rotvector: ident,
      $point: ident,
      $homogeneous_matrix: ident) => (
+
+        similarity_group_impl!($t, $point, $vector, $rotation_matrix);
+
         impl<N: BaseFloat> $t<N> {
             /*
              *

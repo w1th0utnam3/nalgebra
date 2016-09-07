@@ -4,6 +4,11 @@ documented here.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.11.0] - WIP
+### Added
+  * Implementation of traits from the crate `algebra` for every fixed-sized
+    types on nalgebra.
+
 ## [0.10.0]
 ### Added
 Binary operations are now allowed between references as well. For example

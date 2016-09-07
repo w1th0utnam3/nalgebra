@@ -3,6 +3,9 @@
 macro_rules! isometry_impl(
     ($t: ident, $rotmatrix: ident, $vector: ident, $rotvector: ident, $point: ident,
      $homogeneous: ident) => (
+
+        direct_isometry_group_impl!($t, $point, $vector, $rotmatrix);
+
         impl<N: BaseFloat> $t<N> {
             /// Creates a new isometry from an axis-angle rotation, and a vector.
             #[inline]

@@ -26,13 +26,13 @@ use quickcheck::{Arbitrary, Gen};
 use_matrix_group_modules!();
 
 
-/// Special identity matrix. All its operation are no-ops.
+/// The universal identity element. Compatible with all transformations, its operations are no-ops.
 #[repr(C)]
 #[derive(Eq, PartialEq, RustcEncodable, RustcDecodable, Clone, Debug, Copy)]
 pub struct Identity;
 
 impl Identity {
-    /// Creates a new identity matrix.
+    /// Creates a new identity element.
     #[inline]
     pub fn new() -> Identity {
         Identity

@@ -15,6 +15,9 @@ use structs::rotation::{Rotation2, Rotation3};
 #[cfg(feature="arbitrary")]
 use quickcheck::{Arbitrary, Gen};
 
+#[cfg(feature="abstract_algebra")]
+use_direct_isometry_group_modules!();
+
 
 /// Two dimensional **direct** isometry.
 ///

@@ -16,7 +16,7 @@ use structs::matrix::{Matrix2, Matrix3, Matrix4};
 use quickcheck::{Arbitrary, Gen};
 
 #[cfg(feature="abstract_algebra")]
-use_special_orthogonal_group_modules!();
+use_rotation_group_modules!();
 
 /// Two dimensional rotation matrix.
 #[repr(C)]

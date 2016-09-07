@@ -279,7 +279,7 @@ macro_rules! vector_impl(
         componentwise_one!($t, $($compN),+);
         componentwise_absolute!($t, $($compN),+);
         component_basis_element!($t, $($compN),+);
-        vector_space_impl!($t, $dimension, $($compN),+);
+        vector_space_impl!($t, $tp, $dimension, $($compN),+);
 
         /*
          *

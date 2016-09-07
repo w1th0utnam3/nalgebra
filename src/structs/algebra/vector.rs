@@ -2,32 +2,21 @@
 
 macro_rules! use_vector_space_modules(
     () => {
-        use algebra::structure::{FieldApprox, RingCommutativeApprox, GroupAbelianApprox,
-                                 GroupApprox, LoopApprox, MonoidApprox, QuasigroupApprox,
-                                 SemigroupApprox, VectorSpaceApprox, ModuleApprox,
-                                 NormedSpaceApprox, InnerSpaceApprox,
-                                 FiniteDimVectorSpaceApprox,
-                                 Field, RingCommutative, GroupAbelian,
-                                 Group, Loop, Monoid, Quasigroup,
-                                 Semigroup, VectorSpace, Module, RealApprox};
+        use algebra::general::{Magma, Field, Real, RingCommutative, GroupAbelian,
+                               Group, Loop, Monoid, Quasigroup, Semigroup, Module,
+                               Additive, Multiplicative, Recip};
+        use algebra::linear::{VectorSpace, NormedSpace, InnerSpace, FiniteDimVectorSpace,
+                              Similarity, Isometry, DirectIsometry};
+        use algebra::general::Identity as AlgebraIdentity;
+        use algebra::linear::Translation as AlgebraTranslation;
+        use algebra::linear::Transformation as AlgebraTransformation;
         use algebra::cmp::ApproxEq as AlgebraApproxEq;
-        use algebra::ident::Identity;
-        use algebra::ops::Additive;
+        use structs::Identity;
     }
 );
 
 macro_rules! vector_space_impl(
-    ($t: ident, $dimension: expr, $($compN: ident),+) => {
-        /*
-         * Identity & ApproxEq
-         */
-        impl<N: Copy + Identity<Additive>> Identity<Additive> for $t<N> {
-            #[inline]
-            fn id() -> Self {
-                Repeat::repeat(Identity::id())
-            }
-        }
-
+    ($t: ident, $point: ident, $dimension: expr, $($compN: ident),+) => {
         impl<N: AlgebraApproxEq> AlgebraApproxEq for $t<N> {
             type Eps = N::Eps;
 
@@ -44,33 +33,129 @@ macro_rules! vector_space_impl(
 
         /*
          *
-         * Approximate algebraic structures.
+         * Algebraic structures.
          *
          */
-        product_space_inherit_structure!($t, GroupAbelianApprox<Additive>);
-        product_space_inherit_structure!($t, GroupApprox<Additive>);
-        product_space_inherit_structure!($t, LoopApprox<Additive>);
-        product_space_inherit_structure!($t, MonoidApprox<Additive>);
-        product_space_inherit_structure!($t, QuasigroupApprox<Additive>);
-        product_space_inherit_structure!($t, SemigroupApprox<Additive>);
+        impl<N: Copy + AlgebraIdentity<Additive>> AlgebraIdentity<Additive> for $t<N> {
+            #[inline]
+            fn id() -> Self {
+                Repeat::repeat(AlgebraIdentity::id())
+            }
+        }
+
+        impl<N: Clone + Add<Output = N>> Magma<Additive> for $t<N> {
+            fn operate(self, other: $t<N>) -> $t<N> {
+                self + other
+            }
+        }
+
+        product_space_inherit_structure!($t, GroupAbelian<Additive>);
+        product_space_inherit_structure!($t, Group<Additive>);
+        product_space_inherit_structure!($t, Loop<Additive>);
+        product_space_inherit_structure!($t, Monoid<Additive>);
+        product_space_inherit_structure!($t, Quasigroup<Additive>);
+        product_space_inherit_structure!($t, Semigroup<Additive>);
+
+        // Seen as a translation, this is a multiplicative abelian group where the multiplication
+        // is the addition.
+        impl<N: Zero> AlgebraIdentity<Multiplicative> for $t<N> {
+            #[inline]
+            fn id() -> Self {
+                ::zero()
+            }
+        }
+
+        impl<N: Copy + Neg<Output = N>> Recip for $t<N> {
+            type Result = $t<N>;
+
+            #[inline]
+            fn recip(self) -> $t<N> {
+                -self
+            }
+        }
+
+        impl<N: Clone + Add<Output = N>> Magma<Multiplicative> for $t<N> {
+            fn operate(self, other: $t<N>) -> $t<N> {
+                self + other
+            }
+        }
+
+        product_space_inherit_structure!($t, GroupAbelian<Multiplicative>);
+        product_space_inherit_structure!($t, Group<Multiplicative>);
+        product_space_inherit_structure!($t, Loop<Multiplicative>);
+        product_space_inherit_structure!($t, Monoid<Multiplicative>);
+        product_space_inherit_structure!($t, Quasigroup<Multiplicative>);
+        product_space_inherit_structure!($t, Semigroup<Multiplicative>);
 
         /*
-         * Module.
+         *
+         * Transformation groups.
+         *
          */
-        impl<N> ModuleApprox<N> for $t<N> where N: Copy + Neg<Output = N> + Add<N, Output = N> +
-                     AlgebraApproxEq + RingCommutativeApprox
-            { }
+        impl<N: BaseNum + Real> AlgebraTransformation<$point<N>> for $t<N> {
+            #[inline]
+            fn transform_point(&self, pt: &$point<N>) -> $point<N> {
+                *pt + *self
+            }
+
+            #[inline]
+            fn transform_vector(&self, v: &$t<N>) -> $t<N> {
+                *v + *self
+            }
+
+            #[inline]
+            fn inverse_transform_point(&self, pt: &$point<N>) -> $point<N> {
+                *pt - *self
+            }
+
+            #[inline]
+            fn inverse_transform_vector(&self, v: &$t<N>) -> $t<N> {
+                *v - *self
+            }
+        }
+
+        impl<N: BaseNum + Real> Similarity<$point<N>> for $t<N> {
+            type Translation = $t<N>;
+            type Rotation    = Identity;
+
+            #[inline]
+            fn translation(&self) -> $t<N> {
+                *self
+            }
+
+            #[inline]
+            fn rotation(&self) -> Identity {
+                Identity::new()
+            }
+
+            #[inline]
+            fn scaling_factor(&self) -> N {
+                ::one()
+            }
+        }
+
+        impl<N: BaseNum + Real> Isometry<$point<N>> for $t<N> { }
+        impl<N: BaseNum + Real> DirectIsometry<$point<N>> for $t<N> { }
+        impl<N: BaseNum + Real> AlgebraTranslation<$point<N>> for $t<N> { }
+
 
         /*
-         * Vector spaces.
+         *
+         * Vector space.
+         *
          */
-        impl<N> VectorSpaceApprox<N> for $t<N>
-            where N: Copy + Neg<Output = N> + Add<N, Output = N> +
-                     AlgebraApproxEq + FieldApprox { }
+        impl<N> Module for $t<N> where N: Copy + Zero + Neg<Output = N> + Add<N, Output = N> +
+                                          AlgebraApproxEq + RingCommutative {
+            type Ring = N;
+        }
 
-        impl<N> FiniteDimVectorSpaceApprox<N> for $t<N>
-            where N: Copy + Zero + One + Neg<Output = N> + Add<N, Output = N> +
-                     AlgebraApproxEq + FieldApprox {
+        impl<N> VectorSpace for $t<N> where N: Copy + Zero + Neg<Output = N> + Add<N, Output = N> +
+                                            AlgebraApproxEq + Field {
+            type Field = N;
+        }
+
+        impl<N> FiniteDimVectorSpace for $t<N> where N: Copy + Zero + One + Neg<Output = N> +
+                                                        Add<N, Output = N> + AlgebraApproxEq + Field {
             #[inline]
             fn dimension() -> usize {
                 $dimension
@@ -96,7 +181,7 @@ macro_rules! vector_space_impl(
             }
         }
 
-        impl<N: RealApprox> NormedSpaceApprox<N> for $t<N> {
+        impl<N: Real> NormedSpace for $t<N> {
             #[inline]
             fn norm_squared(&self) -> N {
                 self.inner_product(self)
@@ -146,40 +231,21 @@ macro_rules! vector_space_impl(
             }
         }
 
-        impl<N: RealApprox> InnerSpaceApprox<N> for $t<N> {
+        impl<N: Real> InnerSpace for $t<N> {
+            type Real = N;
+
             #[inline]
             fn inner_product(&self, other: &Self) -> N {
                 fold_add!($(self.$compN * other.$compN ),+)
             }
         }
-
-        /*
-         *
-         * Exact algebraic structures.
-         *
-         */
-
-        product_space_inherit_structure!($t, GroupAbelian<Additive>);
-        product_space_inherit_structure!($t, Group<Additive>);
-        product_space_inherit_structure!($t, Loop<Additive>);
-        product_space_inherit_structure!($t, Monoid<Additive>);
-        product_space_inherit_structure!($t, Quasigroup<Additive>);
-        product_space_inherit_structure!($t, Semigroup<Additive>);
-
-        impl<N> VectorSpace<N> for $t<N>
-            where N: Copy + Neg<Output = N> + Add<N, Output = N> + AlgebraApproxEq + Field
-            { }
-
-        impl<N> Module<N> for $t<N>
-            where N: Copy + Neg<Output = N> + Add<N, Output = N> + AlgebraApproxEq + RingCommutative
-            { }
     }
 );
 
 macro_rules! product_space_inherit_structure(
     ($t: ident, $marker: ident<$operator: ident>) => {
         impl<N> $marker<$operator> for $t<N>
-            where N: Copy + Neg<Output = N> + Add<N, Output = N> + AlgebraApproxEq +
+            where N: Copy + Zero + Neg<Output = N> + Add<N, Output = N> + AlgebraApproxEq +
                      $marker<$operator>
                  { }
     }
