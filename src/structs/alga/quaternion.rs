@@ -1,12 +1,12 @@
 use std::ops::Neg;
 
-use algebra::general::{Magma, Group, Loop, Monoid, Quasigroup, Semigroup, Real, Recip,
-                       Multiplicative, Additive};
-use algebra::linear::{Transformation, Similarity, Isometry, DirectIsometry,
-                      OrthogonalGroup};
-use algebra::linear::Rotation as AlgebraRotation;
-use algebra::general::Identity as AlgebraIdentity;
-use algebra::cmp::ApproxEq as AlgebraApproxEq;
+use alga::general::{Magma, Group, Loop, Monoid, Quasigroup, Semigroup, Real, Recip,
+                    Multiplicative, Additive};
+use alga::linear::{Transformation, Similarity, Isometry, DirectIsometry,
+                   OrthogonalGroup};
+use alga::linear::Rotation as AlgebraRotation;
+use alga::general::Identity as AlgebraIdentity;
+use alga::cmp::ApproxEq as AlgebraApproxEq;
 
 use structs::{Identity, Quaternion, UnitQuaternion, Point3, Vector3};
 use traits::{BaseNum, BaseFloat, Inverse};

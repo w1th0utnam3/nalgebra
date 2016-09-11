@@ -2,15 +2,15 @@
 
 macro_rules! use_vector_space_modules(
     () => {
-        use algebra::general::{Magma, Field, Real, RingCommutative, GroupAbelian,
-                               Group, Loop, Monoid, Quasigroup, Semigroup, Module,
-                               Additive, Multiplicative, Recip};
-        use algebra::linear::{VectorSpace, NormedSpace, InnerSpace, FiniteDimVectorSpace,
-                              Similarity, Isometry, DirectIsometry};
-        use algebra::general::Identity as AlgebraIdentity;
-        use algebra::linear::Translation as AlgebraTranslation;
-        use algebra::linear::Transformation as AlgebraTransformation;
-        use algebra::cmp::ApproxEq as AlgebraApproxEq;
+        use alga::general::{Magma, Field, Real, RingCommutative, GroupAbelian,
+                            Group, Loop, Monoid, Quasigroup, Semigroup, Module,
+                            Additive, Multiplicative, Recip};
+        use alga::linear::{VectorSpace, NormedSpace, InnerSpace, FiniteDimVectorSpace,
+                           Similarity, Isometry, DirectIsometry};
+        use alga::general::Identity as AlgebraIdentity;
+        use alga::linear::Translation as AlgebraTranslation;
+        use alga::linear::Transformation as AlgebraTransformation;
+        use alga::cmp::ApproxEq as AlgebraApproxEq;
         use structs::Identity;
     }
 );

@@ -17,7 +17,7 @@ pub use self::unit::Unit;
 pub use self::vectorn::VectorN;
 
 mod common_macros;
-mod algebra;
+mod alga;
 mod dmatrix_macros;
 mod dmatrix;
 mod vectorn_macros;

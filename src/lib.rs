@@ -87,7 +87,7 @@ extern crate generic_array;
 extern crate quickcheck;
 
 #[cfg(feature="abstract_algebra")]
-extern crate algebra;
+extern crate alga;
 
 use std::cmp;
 use std::ops::{Neg, Mul};

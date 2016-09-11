@@ -34,7 +34,7 @@ impl<N: BaseFloat> Orthographic3<N> {
     /// Creates a new 3D orthographic projection.
     pub fn new(left: N, right: N, bottom: N, top: N, znear: N, zfar: N) -> Orthographic3<N> {
         assert!(!::is_zero(&(zfar - znear)));
-        assert!(!::is_zero(&(left - right)));
+        assert!(!::is_zero(&(right - left)));
         assert!(!::is_zero(&(top - bottom)));
 
         Orthographic3 {

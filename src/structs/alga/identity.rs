@@ -1,8 +1,8 @@
-use algebra::general::{Magma, Group, Loop, Monoid, Quasigroup, Semigroup, Op, Inverse};
-use algebra::linear::{EuclideanSpace, Transformation, Similarity, Isometry,
-                      DirectIsometry, OrthogonalGroup, Translation, Rotation};
-use algebra::cmp::ApproxEq;
-use algebra::general::Identity as AlgebraIdentity;
+use alga::general::{Magma, Group, Loop, Monoid, Quasigroup, Semigroup, Op, Inverse};
+use alga::linear::{EuclideanSpace, Transformation, Similarity, Isometry,
+                   DirectIsometry, OrthogonalGroup, Translation, Rotation};
+use alga::cmp::ApproxEq;
+use alga::general::Identity as AlgebraIdentity;
 
 use structs::Identity;
 

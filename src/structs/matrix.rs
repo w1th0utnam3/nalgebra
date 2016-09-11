@@ -1,4 +1,4 @@
-//! Matrixrices with dimensions known at compile-time.
+//! Matrices with dimensions known at compile-time.
 
 #![allow(missing_docs)] // we allow missing to avoid having to document the mij components.
 

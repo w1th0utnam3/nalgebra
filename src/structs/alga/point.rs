@@ -2,9 +2,9 @@
 
 macro_rules! use_euclidean_space_modules(
     () => {
-        use algebra::general::{Field, Real};
-        use algebra::linear::{AffineSpace, EuclideanSpace};
-        use algebra::cmp::ApproxEq as AlgebraApproxEq;
+        use alga::general::{Field, Real};
+        use alga::linear::{AffineSpace, EuclideanSpace};
+        use alga::cmp::ApproxEq as AlgebraApproxEq;
     }
 );
 

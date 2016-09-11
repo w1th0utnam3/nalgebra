@@ -2,7 +2,7 @@
 
 macro_rules! use_matrix_group_modules(
     () => {
-        use algebra::cmp::ApproxEq as AlgebraApproxEq;
+        use alga::cmp::ApproxEq as AlgebraApproxEq;
     }
 );
 

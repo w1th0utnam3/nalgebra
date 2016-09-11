@@ -2,12 +2,12 @@
 
 macro_rules! use_direct_isometry_group_modules(
     () => {
-        use algebra::general::{Magma, Group, Loop, Monoid, Quasigroup, Semigroup,
-                               Real, Recip, Multiplicative};
-        use algebra::linear::{Similarity, Isometry, DirectIsometry};
-        use algebra::linear::Transformation as AlgebraTransformation;
-        use algebra::general::Identity as AlgebraIdentity;
-        use algebra::cmp::ApproxEq as AlgebraApproxEq;
+        use alga::general::{Magma, Group, Loop, Monoid, Quasigroup, Semigroup,
+                            Real, Recip, Multiplicative};
+        use alga::linear::{Similarity, Isometry, DirectIsometry};
+        use alga::linear::Transformation as AlgebraTransformation;
+        use alga::general::Identity as AlgebraIdentity;
+        use alga::cmp::ApproxEq as AlgebraApproxEq;
     }
 );
 
