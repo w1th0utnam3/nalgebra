@@ -1,7 +1,12 @@
 language: rust
 
+rust:
+    - stable
+    - beta
+    - nightly
+
 script:
     - rustc --version
     - cargo --version
-    - cargo build --verbose --features "arbitrary generic_sizes"
-    - cargo test --verbose --features arbitrary
+    - cargo build --verbose --features "arbitrary generic_sizes abstract_algebra"
+    - cargo test --verbose --features "arbitrary generic_sizes abstract_algebra"
