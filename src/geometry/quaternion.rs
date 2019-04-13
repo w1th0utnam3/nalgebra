@@ -1,9 +1,8 @@
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
 use num::Zero;
-use std::fmt;
-use std::hash;
 #[cfg(feature = "abomonation-serialize")]
 use std::io::{Result as IOResult, Write};
+use std::{fmt, hash};
 
 #[cfg(feature = "serde-serialize")]
 use crate::base::storage::Owned;
@@ -15,9 +14,11 @@ use abomonation::Abomonation;
 
 use alga::general::RealField;
 
-use crate::base::dimension::{U1, U3, U4};
-use crate::base::storage::{CStride, RStride};
-use crate::base::{Matrix3, Matrix4, MatrixSlice, MatrixSliceMut, Unit, Vector3, Vector4};
+use crate::base::{
+    dimension::{U1, U3, U4},
+    storage::{CStride, RStride},
+    Matrix3, Matrix4, MatrixSlice, MatrixSliceMut, Unit, Vector3, Vector4,
+};
 
 use crate::geometry::{Point3, Rotation};
 
@@ -945,7 +946,7 @@ impl<N: RealField> UnitQuaternion<N> {
     #[inline]
     pub fn angle(&self) -> N {
         let w = self.quaternion().scalar().abs();
-	    self.quaternion().imag().norm().atan2(w) * crate::convert(2.0f64)
+        self.quaternion().imag().norm().atan2(w) * crate::convert(2.0f64)
     }
 
     /// The underlying quaternion.
@@ -1024,7 +1025,7 @@ impl<N: RealField> UnitQuaternion<N> {
     /// assert_relative_eq!(rot_to * rot1, rot2, epsilon = 1.0e-6);
     /// ```
     #[inline]
-    pub fn rotation_to(&self, other: &Self) -> Self{
+    pub fn rotation_to(&self, other: &Self) -> Self {
         other / self
     }
 
@@ -1087,13 +1088,7 @@ impl<N: RealField> UnitQuaternion<N> {
     /// * `epsilon`: the value below which the sinus of the angle separating both quaternion
     /// must be to return `None`.
     #[inline]
-    pub fn try_slerp(
-        &self,
-        other: &Self,
-        t: N,
-        epsilon: N,
-    ) -> Option<Self>
-    {
+    pub fn try_slerp(&self, other: &Self, t: N, epsilon: N) -> Option<Self> {
         Unit::new_unchecked(self.coords)
             .try_slerp(&Unit::new_unchecked(other.coords), t, epsilon)
             .map(|q| Unit::new_unchecked(Quaternion::from(q.into_inner())))

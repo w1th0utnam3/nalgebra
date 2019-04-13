@@ -2,13 +2,17 @@
 use quickcheck::{Arbitrary, Gen};
 
 use num::{Bounded, One, Zero};
-use rand::distributions::{Distribution, Standard};
-use rand::Rng;
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
 
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimName, DimNameAdd, DimNameSum, U1, U2, U3, U4, U5, U6},
+    DefaultAllocator, Scalar, VectorN,
+};
 use alga::general::ClosedDiv;
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, DimNameAdd, DimNameSum, U1, U2, U3, U4, U5, U6};
-use crate::base::{DefaultAllocator, Scalar, VectorN};
 
 use crate::geometry::Point;
 

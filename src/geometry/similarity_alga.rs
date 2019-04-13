@@ -1,13 +1,15 @@
-use alga::general::{
-    AbstractGroup, AbstractLoop, AbstractMagma, AbstractMonoid, AbstractQuasigroup,
-    AbstractSemigroup, Identity, TwoSidedInverse, Multiplicative, RealField,
+use alga::{
+    general::{
+        AbstractGroup, AbstractLoop, AbstractMagma, AbstractMonoid, AbstractQuasigroup,
+        AbstractSemigroup, Identity, Multiplicative, RealField, TwoSidedInverse,
+    },
+    linear::{
+        AffineTransformation, ProjectiveTransformation, Rotation, Similarity as AlgaSimilarity,
+        Transformation,
+    },
 };
-use alga::linear::Similarity as AlgaSimilarity;
-use alga::linear::{AffineTransformation, ProjectiveTransformation, Rotation, Transformation};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::DimName;
-use crate::base::{DefaultAllocator, VectorN};
+use crate::base::{allocator::Allocator, dimension::DimName, DefaultAllocator, VectorN};
 
 use crate::geometry::{Point, Similarity, Translation};
 

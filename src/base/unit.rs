@@ -1,8 +1,10 @@
 use approx::RelativeEq;
 #[cfg(feature = "abomonation-serialize")]
 use std::io::{Result as IOResult, Write};
-use std::mem;
-use std::ops::{Deref, Neg};
+use std::{
+    mem,
+    ops::{Deref, Neg},
+};
 
 #[cfg(feature = "serde-serialize")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -10,8 +12,10 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 #[cfg(feature = "abomonation-serialize")]
 use abomonation::Abomonation;
 
-use alga::general::{SubsetOf, ComplexField};
-use alga::linear::NormedSpace;
+use alga::{
+    general::{ComplexField, SubsetOf},
+    linear::NormedSpace,
+};
 
 /// A wrapper that ensures the underlying algebraic entity has a unit norm.
 ///
@@ -131,7 +135,7 @@ impl<T> Unit<T> {
 
     /// Retrieves the underlying value.
     /// Deprecated: use [Unit::into_inner] instead.
-    #[deprecated(note="use `.into_inner()` instead")]
+    #[deprecated(note = "use `.into_inner()` instead")]
     #[inline]
     pub fn unwrap(self) -> T {
         self.value

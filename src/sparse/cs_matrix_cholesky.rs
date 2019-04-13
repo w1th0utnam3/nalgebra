@@ -1,9 +1,10 @@
-use std::iter;
-use std::mem;
+use std::{iter, mem};
 
-use crate::allocator::Allocator;
-use crate::sparse::{CsMatrix, CsStorage, CsStorageIter, CsStorageIterMut, CsVecStorage};
-use crate::{DefaultAllocator, Dim, RealField, VectorN, U1};
+use crate::{
+    allocator::Allocator,
+    sparse::{CsMatrix, CsStorage, CsStorageIter, CsStorageIterMut, CsVecStorage},
+    DefaultAllocator, Dim, RealField, VectorN, U1,
+};
 
 /// The cholesky decomposition of a column compressed sparse matrix.
 pub struct CsCholesky<N: RealField, D: Dim>
@@ -333,24 +334,24 @@ where DefaultAllocator: Allocator<usize, D> + Allocator<N, D>
         let mut counts: Vec<_> = iter::repeat(0).take(len).collect();
         let mut reach = Vec::new();
         let mut marks = Vec::new();
-    
+
         for i in 0..len {
             Self::reach(m, i, i, tree, &mut marks, &mut reach);
-    
+
             for j in reach.drain(..) {
                 counts[j] += 1;
             }
         }
-    
+
         counts
     }
-    
+
     fn tree_postorder(tree: &[usize]) -> Vec<usize> {
         // FIXME: avoid all those allocations?
         let mut first_child: Vec<_> = iter::repeat(usize::max_value()).take(tree.len()).collect();
         let mut other_children: Vec<_> =
             iter::repeat(usize::max_value()).take(tree.len()).collect();
-    
+
         // Build the children list from the parent list.
         // The set of children of the node `i` is given by the linked list
         // starting at `first_child[i]`. The nodes of this list are then:
@@ -362,10 +363,10 @@ where DefaultAllocator: Allocator<usize, D> + Allocator<N, D>
                 other_children[i] = brother;
             }
         }
-    
+
         let mut stack = Vec::with_capacity(tree.len());
         let mut postorder = Vec::with_capacity(tree.len());
-    
+
         for (i, node) in tree.iter().enumerate() {
             if *node == usize::max_value() {
                 Self::dfs(
@@ -377,10 +378,10 @@ where DefaultAllocator: Allocator<usize, D> + Allocator<N, D>
                 )
             }
         }
-    
+
         postorder
     }
-    
+
     fn dfs(
         i: usize,
         first_child: &mut [usize],
@@ -390,10 +391,10 @@ where DefaultAllocator: Allocator<usize, D> + Allocator<N, D>
     ) {
         stack.clear();
         stack.push(i);
-    
+
         while let Some(n) = stack.pop() {
             let child = first_child[n];
-    
+
             if child == usize::max_value() {
                 // No children left.
                 result.push(n);

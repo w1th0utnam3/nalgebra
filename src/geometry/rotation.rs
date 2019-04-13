@@ -1,9 +1,8 @@
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
 use num::{One, Zero};
-use std::fmt;
-use std::hash;
 #[cfg(feature = "abomonation-serialize")]
 use std::io::{Result as IOResult, Write};
+use std::{fmt, hash};
 
 #[cfg(feature = "serde-serialize")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -16,10 +15,14 @@ use abomonation::Abomonation;
 
 use alga::general::RealField;
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, DimNameAdd, DimNameSum, U1};
-use crate::base::{DefaultAllocator, MatrixN, Scalar, VectorN};
-use crate::geometry::Point;
+use crate::{
+    base::{
+        allocator::Allocator,
+        dimension::{DimName, DimNameAdd, DimNameSum, U1},
+        DefaultAllocator, MatrixN, Scalar, VectorN,
+    },
+    geometry::Point,
+};
 
 /// A rotation matrix.
 #[repr(C)]
@@ -175,7 +178,7 @@ where DefaultAllocator: Allocator<N, D, D>
 
     /// Unwraps the underlying matrix.
     /// Deprecated: Use [Rotation::into_inner] instead.
-    #[deprecated(note="use `.into_inner()` instead")]
+    #[deprecated(note = "use `.into_inner()` instead")]
     #[inline]
     pub fn unwrap(self) -> MatrixN<N, D> {
         self.matrix

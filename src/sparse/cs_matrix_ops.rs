@@ -2,11 +2,13 @@ use alga::general::{ClosedAdd, ClosedMul};
 use num::{One, Zero};
 use std::ops::{Add, Mul};
 
-use crate::allocator::Allocator;
-use crate::constraint::{AreMultipliable, DimEq, ShapeConstraint};
-use crate::sparse::{CsMatrix, CsStorage, CsStorageMut, CsVector};
-use crate::storage::StorageMut;
-use crate::{DefaultAllocator, Dim, Scalar, Vector, VectorN, U1};
+use crate::{
+    allocator::Allocator,
+    constraint::{AreMultipliable, DimEq, ShapeConstraint},
+    sparse::{CsMatrix, CsStorage, CsStorageMut, CsVector},
+    storage::StorageMut,
+    DefaultAllocator, Dim, Scalar, Vector, VectorN, U1,
+};
 
 impl<N: Scalar, R: Dim, C: Dim, S: CsStorage<N, R, C>> CsMatrix<N, R, C, S> {
     fn scatter<R2: Dim, C2: Dim>(
@@ -112,11 +114,11 @@ impl<N: Scalar + Zero + ClosedAdd + ClosedMul, D: Dim, S: StorageMut<N, D>> Vect
         let col2 = a.column(0);
         let val = unsafe { *x.vget_unchecked(0) };
         self.axpy_sparse(alpha * val, &col2, beta);
-    
+
         for j in 1..ncols2 {
             let col2 = a.column(j);
             let val = unsafe { *x.vget_unchecked(j) };
-    
+
             self.axpy_sparse(alpha * val, &col2, N::one());
         }
     }

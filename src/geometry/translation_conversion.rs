@@ -1,13 +1,19 @@
 use num::{One, Zero};
 
-use alga::general::{RealField, SubsetOf, SupersetOf};
-use alga::linear::Rotation;
+use alga::{
+    general::{RealField, SubsetOf, SupersetOf},
+    linear::Rotation,
+};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, DimNameAdd, DimNameSum, U1};
-use crate::base::{DefaultAllocator, MatrixN, Scalar, VectorN};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimName, DimNameAdd, DimNameSum, U1},
+    DefaultAllocator, MatrixN, Scalar, VectorN,
+};
 
-use crate::geometry::{Isometry, Point, Similarity, SuperTCategoryOf, TAffine, Transform, Translation};
+use crate::geometry::{
+    Isometry, Point, Similarity, SuperTCategoryOf, TAffine, Transform, Translation,
+};
 
 /*
  * This file provides the following conversions:

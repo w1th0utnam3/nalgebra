@@ -3,14 +3,20 @@ use quickcheck::{Arbitrary, Gen};
 
 use num::One;
 use num_complex::Complex;
-use rand::distributions::{Distribution, OpenClosed01, Standard};
-use rand::Rng;
+use rand::{
+    distributions::{Distribution, OpenClosed01, Standard},
+    Rng,
+};
 
+use crate::{
+    base::{
+        dimension::{U1, U2},
+        storage::Storage,
+        Matrix2, Unit, Vector,
+    },
+    geometry::{Rotation2, UnitComplex},
+};
 use alga::general::RealField;
-use crate::base::dimension::{U1, U2};
-use crate::base::storage::Storage;
-use crate::base::{Unit, Vector, Matrix2};
-use crate::geometry::{Rotation2, UnitComplex};
 
 impl<N: RealField> UnitComplex<N> {
     /// The unit complex number multiplicative identity.

@@ -1,11 +1,13 @@
 use num::{One, Zero};
 use num_complex::Complex;
 
-use na::allocator::Allocator;
-use na::dimension::{Dim, DimMin, DimMinimum, U1};
-use na::storage::Storage;
-use na::{DefaultAllocator, Matrix, MatrixMN, MatrixN, Scalar, VectorN};
 use crate::ComplexHelper;
+use na::{
+    allocator::Allocator,
+    dimension::{Dim, DimMin, DimMinimum, U1},
+    storage::Storage,
+    DefaultAllocator, Matrix, MatrixMN, MatrixN, Scalar, VectorN,
+};
 
 use lapack;
 
@@ -20,21 +22,17 @@ use lapack;
 #[cfg_attr(feature = "serde-serialize", derive(Serialize, Deserialize))]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        serialize = "DefaultAllocator: Allocator<N, R, C> +
+    serde(bound(serialize = "DefaultAllocator: Allocator<N, R, C> +
                            Allocator<i32, DimMinimum<R, C>>,
          MatrixMN<N, R, C>: Serialize,
-         PermutationSequence<DimMinimum<R, C>>: Serialize"
-    ))
+         PermutationSequence<DimMinimum<R, C>>: Serialize"))
 )]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        deserialize = "DefaultAllocator: Allocator<N, R, C> +
+    serde(bound(deserialize = "DefaultAllocator: Allocator<N, R, C> +
                            Allocator<i32, DimMinimum<R, C>>,
          MatrixMN<N, R, C>: Deserialize<'de>,
-         PermutationSequence<DimMinimum<R, C>>: Deserialize<'de>"
-    ))
+         PermutationSequence<DimMinimum<R, C>>: Deserialize<'de>"))
 )]
 #[derive(Clone, Debug)]
 pub struct LU<N: Scalar, R: DimMin<C>, C: Dim>
@@ -49,7 +47,8 @@ where
     DefaultAllocator: Allocator<N, R, C> + Allocator<i32, DimMinimum<R, C>>,
     MatrixMN<N, R, C>: Copy,
     VectorN<i32, DimMinimum<R, C>>: Copy,
-{}
+{
+}
 
 impl<N: LUScalar, R: Dim, C: Dim> LU<N, R, C>
 where
@@ -253,13 +252,8 @@ where
     /// be determined.
     ///
     /// Returns `false` if no solution was found (the decomposed matrix is singular).
-    pub fn solve_adjoint_mut<R2: Dim, C2: Dim>(
-        &self,
-        b: &mut MatrixMN<N, R2, C2>,
-    ) -> bool
-    where
-        DefaultAllocator: Allocator<N, R2, C2> + Allocator<i32, R2>,
-    {
+    pub fn solve_adjoint_mut<R2: Dim, C2: Dim>(&self, b: &mut MatrixMN<N, R2, C2>) -> bool
+    where DefaultAllocator: Allocator<N, R2, C2> + Allocator<i32, R2> {
         self.generic_solve_mut(b'T', b)
     }
 }

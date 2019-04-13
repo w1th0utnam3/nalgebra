@@ -1,9 +1,7 @@
-use std::fs;
-use std::path::Path;
+use std::{fs, path::Path};
 
+use crate::{sparse::CsMatrix, RealField};
 use pest::Parser;
-use crate::sparse::CsMatrix;
-use crate::RealField;
 
 #[derive(Parser)]
 #[grammar = "io/matrix_market.pest"]

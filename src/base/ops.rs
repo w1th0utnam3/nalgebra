@@ -1,19 +1,19 @@
 use num::{One, Signed, Zero};
-use std::cmp::PartialOrd;
-use std::iter;
-use std::ops::{
-    Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign,
+use std::{
+    cmp::PartialOrd,
+    iter,
+    ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign},
 };
 
-use alga::general::{ComplexField, ClosedAdd, ClosedDiv, ClosedMul, ClosedNeg, ClosedSub};
+use alga::general::{ClosedAdd, ClosedDiv, ClosedMul, ClosedNeg, ClosedSub, ComplexField};
 
-use crate::base::allocator::{Allocator, SameShapeAllocator, SameShapeC, SameShapeR};
-use crate::base::constraint::{
-    AreMultipliable, DimEq, SameNumberOfColumns, SameNumberOfRows, ShapeConstraint,
+use crate::base::{
+    allocator::{Allocator, SameShapeAllocator, SameShapeC, SameShapeR},
+    constraint::{AreMultipliable, DimEq, SameNumberOfColumns, SameNumberOfRows, ShapeConstraint},
+    dimension::{Dim, DimMul, DimName, DimProd, Dynamic},
+    storage::{ContiguousStorageMut, Storage, StorageMut},
+    DefaultAllocator, Matrix, MatrixMN, MatrixN, MatrixSum, Scalar, VectorSliceN,
 };
-use crate::base::dimension::{Dim, DimMul, DimName, DimProd, Dynamic};
-use crate::base::storage::{ContiguousStorageMut, Storage, StorageMut};
-use crate::base::{DefaultAllocator, Matrix, MatrixMN, MatrixN, MatrixSum, Scalar, VectorSliceN};
 
 /*
  *
@@ -445,7 +445,9 @@ where
     /// # use nalgebra::DMatrix;
     /// iter::empty::<&DMatrix<f64>>().sum::<DMatrix<f64>>(); // panics!
     /// ```
-    fn sum<I: Iterator<Item = &'a MatrixMN<N, Dynamic, C>>>(mut iter: I) -> MatrixMN<N, Dynamic, C> {
+    fn sum<I: Iterator<Item = &'a MatrixMN<N, Dynamic, C>>>(
+        mut iter: I,
+    ) -> MatrixMN<N, Dynamic, C> {
         if let Some(first) = iter.next() {
             iter.fold(first.clone(), |acc, x| acc + x)
         } else {
@@ -692,11 +694,11 @@ where
     /// Equivalent to `self.adjoint() * rhs`.
     #[inline]
     pub fn ad_mul<R2: Dim, C2: Dim, SB>(&self, rhs: &Matrix<N, R2, C2, SB>) -> MatrixMN<N, C1, C2>
-        where
-            N: ComplexField,
-            SB: Storage<N, R2, C2>,
-            DefaultAllocator: Allocator<N, C1, C2>,
-            ShapeConstraint: SameNumberOfRows<R1, R2>,
+    where
+        N: ComplexField,
+        SB: Storage<N, R2, C2>,
+        DefaultAllocator: Allocator<N, C1, C2>,
+        ShapeConstraint: SameNumberOfRows<R1, R2>,
     {
         let mut res =
             unsafe { Matrix::new_uninitialized_generic(self.data.shape().1, rhs.data.shape().1) };
@@ -710,7 +712,10 @@ where
         &self,
         rhs: &Matrix<N, R2, C2, SB>,
         out: &mut Matrix<N, R3, C3, SC>,
-        dot: impl Fn(&VectorSliceN<N, R1, SA::RStride, SA::CStride>, &VectorSliceN<N, R2, SB::RStride, SB::CStride>) -> N,
+        dot: impl Fn(
+            &VectorSliceN<N, R1, SA::RStride, SA::CStride>,
+            &VectorSliceN<N, R2, SB::RStride, SB::CStride>,
+        ) -> N,
     ) where
         SB: Storage<N, R2, C2>,
         SC: StorageMut<N, R3, C3>,
@@ -869,7 +874,7 @@ where
 impl<N: Scalar, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S> {
     #[inline(always)]
     fn xcmp<N2>(&self, abs: impl Fn(N) -> N2, cmp: impl Fn(N2, N2) -> bool) -> N2
-        where N2: Scalar + PartialOrd + Zero {
+    where N2: Scalar + PartialOrd + Zero {
         let mut max = N2::zero();
 
         for e in self.iter() {
@@ -886,42 +891,42 @@ impl<N: Scalar, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S> {
     /// Returns the absolute value of the component with the largest absolute value.
     #[inline]
     pub fn amax(&self) -> N
-        where N: PartialOrd + Signed {
+    where N: PartialOrd + Signed {
         self.xcmp(|e| e.abs(), |a, b| a > b)
     }
 
     /// Returns the the 1-norm of the complex component with the largest 1-norm.
     #[inline]
     pub fn camax(&self) -> N::RealField
-        where N: ComplexField {
+    where N: ComplexField {
         self.xcmp(|e| e.norm1(), |a, b| a > b)
     }
 
     /// Returns the component with the largest value.
     #[inline]
     pub fn max(&self) -> N
-        where N: PartialOrd + Signed {
+    where N: PartialOrd + Signed {
         self.xcmp(|e| e, |a, b| a > b)
     }
 
     /// Returns the absolute value of the component with the smallest absolute value.
     #[inline]
     pub fn amin(&self) -> N
-        where N: PartialOrd + Signed {
+    where N: PartialOrd + Signed {
         self.xcmp(|e| e.abs(), |a, b| a < b)
     }
 
     /// Returns the the 1-norm of the complex component with the smallest 1-norm.
     #[inline]
     pub fn camin(&self) -> N::RealField
-        where N: ComplexField {
+    where N: ComplexField {
         self.xcmp(|e| e.norm1(), |a, b| a < b)
     }
 
     /// Returns the component with the smallest value.
     #[inline]
     pub fn min(&self) -> N
-        where N: PartialOrd + Signed {
+    where N: PartialOrd + Signed {
         self.xcmp(|e| e, |a, b| a < b)
     }
 }

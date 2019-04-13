@@ -1,11 +1,12 @@
 use alga::general::ClosedAdd;
 use num::Zero;
 
-use crate::allocator::Allocator;
-use crate::sparse::cs_utils;
-use crate::sparse::{CsMatrix, CsStorage};
-use crate::storage::Storage;
-use crate::{DefaultAllocator, Dim, Dynamic, Matrix, MatrixMN, Scalar};
+use crate::{
+    allocator::Allocator,
+    sparse::{cs_utils, CsMatrix, CsStorage},
+    storage::Storage,
+    DefaultAllocator, Dim, Dynamic, Matrix, MatrixMN, Scalar,
+};
 
 impl<'a, N: Scalar + Zero + ClosedAdd> CsMatrix<N> {
     /// Creates a column-compressed sparse matrix from a sparse matrix in triplet form.

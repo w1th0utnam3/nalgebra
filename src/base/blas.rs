@@ -5,14 +5,13 @@ use num::{One, Signed, Zero};
 #[cfg(feature = "std")]
 use std::mem;
 
-use crate::base::allocator::Allocator;
-use crate::base::constraint::{
-    AreMultipliable, DimEq, SameNumberOfColumns, SameNumberOfRows, ShapeConstraint,
+use crate::base::{
+    allocator::Allocator,
+    constraint::{AreMultipliable, DimEq, SameNumberOfColumns, SameNumberOfRows, ShapeConstraint},
+    dimension::{Dim, Dynamic, U1, U2, U3, U4},
+    storage::{Storage, StorageMut},
+    DVectorSlice, DefaultAllocator, Matrix, Scalar, SquareMatrix, Vector, VectorSliceN,
 };
-use crate::base::dimension::{Dim, Dynamic, U1, U2, U3, U4};
-use crate::base::storage::{Storage, StorageMut};
-use crate::base::{DefaultAllocator, Matrix, Scalar, SquareMatrix, Vector, DVectorSlice, VectorSliceN};
-
 
 // FIXME: find a way to avoid code duplication just for complex number support.
 impl<N: ComplexField, D: Dim, S: Storage<N, D>> Vector<N, D, S> {
@@ -102,7 +101,7 @@ impl<N: Scalar + PartialOrd, D: Dim, S: Storage<N, D>> Vector<N, D, S> {
     /// ```
     #[inline]
     pub fn iamax(&self) -> usize
-        where N: Signed {
+    where N: Signed {
         assert!(!self.is_empty(), "The input vector must not be empty.");
 
         let mut the_max = unsafe { self.vget_unchecked(0).abs() };
@@ -173,7 +172,7 @@ impl<N: Scalar + PartialOrd, D: Dim, S: Storage<N, D>> Vector<N, D, S> {
     /// ```
     #[inline]
     pub fn iamin(&self) -> usize
-        where N: Signed {
+    where N: Signed {
         assert!(!self.is_empty(), "The input vector must not be empty.");
 
         let mut the_min = unsafe { self.vget_unchecked(0).abs() };
@@ -229,7 +228,6 @@ impl<N: ComplexField, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S> {
     }
 }
 
-
 impl<N: Scalar + PartialOrd + Signed, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S> {
     /// Computes the index of the matrix component with the largest absolute value.
     ///
@@ -267,10 +265,14 @@ impl<N, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S>
 where N: Scalar + Zero + ClosedAdd + ClosedMul
 {
     #[inline(always)]
-    fn dotx<R2: Dim, C2: Dim, SB>(&self, rhs: &Matrix<N, R2, C2, SB>, conjugate: impl Fn(N) -> N) -> N
-        where
-            SB: Storage<N, R2, C2>,
-            ShapeConstraint: DimEq<R, R2> + DimEq<C, C2>,
+    fn dotx<R2: Dim, C2: Dim, SB>(
+        &self,
+        rhs: &Matrix<N, R2, C2, SB>,
+        conjugate: impl Fn(N) -> N,
+    ) -> N
+    where
+        SB: Storage<N, R2, C2>,
+        ShapeConstraint: DimEq<R, R2> + DimEq<C, C2>,
     {
         assert!(
             self.nrows() == rhs.nrows(),
@@ -341,14 +343,30 @@ where N: Scalar + Zero + ClosedAdd + ClosedMul
             acc7 = N::zero();
 
             while self.nrows() - i >= 8 {
-                acc0 += unsafe { conjugate(*self.get_unchecked((i + 0, j))) * *rhs.get_unchecked((i + 0, j)) };
-                acc1 += unsafe { conjugate(*self.get_unchecked((i + 1, j))) * *rhs.get_unchecked((i + 1, j)) };
-                acc2 += unsafe { conjugate(*self.get_unchecked((i + 2, j))) * *rhs.get_unchecked((i + 2, j)) };
-                acc3 += unsafe { conjugate(*self.get_unchecked((i + 3, j))) * *rhs.get_unchecked((i + 3, j)) };
-                acc4 += unsafe { conjugate(*self.get_unchecked((i + 4, j))) * *rhs.get_unchecked((i + 4, j)) };
-                acc5 += unsafe { conjugate(*self.get_unchecked((i + 5, j))) * *rhs.get_unchecked((i + 5, j)) };
-                acc6 += unsafe { conjugate(*self.get_unchecked((i + 6, j))) * *rhs.get_unchecked((i + 6, j)) };
-                acc7 += unsafe { conjugate(*self.get_unchecked((i + 7, j))) * *rhs.get_unchecked((i + 7, j)) };
+                acc0 += unsafe {
+                    conjugate(*self.get_unchecked((i + 0, j))) * *rhs.get_unchecked((i + 0, j))
+                };
+                acc1 += unsafe {
+                    conjugate(*self.get_unchecked((i + 1, j))) * *rhs.get_unchecked((i + 1, j))
+                };
+                acc2 += unsafe {
+                    conjugate(*self.get_unchecked((i + 2, j))) * *rhs.get_unchecked((i + 2, j))
+                };
+                acc3 += unsafe {
+                    conjugate(*self.get_unchecked((i + 3, j))) * *rhs.get_unchecked((i + 3, j))
+                };
+                acc4 += unsafe {
+                    conjugate(*self.get_unchecked((i + 4, j))) * *rhs.get_unchecked((i + 4, j))
+                };
+                acc5 += unsafe {
+                    conjugate(*self.get_unchecked((i + 5, j))) * *rhs.get_unchecked((i + 5, j))
+                };
+                acc6 += unsafe {
+                    conjugate(*self.get_unchecked((i + 6, j))) * *rhs.get_unchecked((i + 6, j))
+                };
+                acc7 += unsafe {
+                    conjugate(*self.get_unchecked((i + 7, j))) * *rhs.get_unchecked((i + 7, j))
+                };
                 i += 8;
             }
 
@@ -358,13 +376,13 @@ where N: Scalar + Zero + ClosedAdd + ClosedMul
             res += acc3 + acc7;
 
             for k in i..self.nrows() {
-                res += unsafe { conjugate(*self.get_unchecked((k, j))) * *rhs.get_unchecked((k, j)) }
+                res +=
+                    unsafe { conjugate(*self.get_unchecked((k, j))) * *rhs.get_unchecked((k, j)) }
             }
         }
 
         res
     }
-
 
     /// The dot product between two vectors or matrices (seen as vectors).
     ///
@@ -419,10 +437,10 @@ where N: Scalar + Zero + ClosedAdd + ClosedMul
     /// ```
     #[inline]
     pub fn dotc<R2: Dim, C2: Dim, SB>(&self, rhs: &Matrix<N, R2, C2, SB>) -> N
-        where
-            N: ComplexField,
-            SB: Storage<N, R2, C2>,
-            ShapeConstraint: DimEq<R, R2> + DimEq<C, C2>,
+    where
+        N: ComplexField,
+        SB: Storage<N, R2, C2>,
+        ShapeConstraint: DimEq<R, R2> + DimEq<C, C2>,
     {
         self.dotx(rhs, ComplexField::conjugate)
     }
@@ -581,7 +599,6 @@ where
         }
     }
 
-
     #[inline(always)]
     fn xxgemv<D2: Dim, D3: Dim, SB, SC>(
         &mut self,
@@ -589,7 +606,10 @@ where
         a: &SquareMatrix<N, D2, SB>,
         x: &Vector<N, D3, SC>,
         beta: N,
-        dot: impl Fn(&DVectorSlice<N, SB::RStride, SB::CStride>, &DVectorSlice<N, SC::RStride, SC::CStride>) -> N,
+        dot: impl Fn(
+            &DVectorSlice<N, SB::RStride, SB::CStride>,
+            &DVectorSlice<N, SC::RStride, SC::CStride>,
+        ) -> N,
     ) where
         N: One,
         SB: Storage<N, D2, D2>,
@@ -741,7 +761,6 @@ where
         self.xxgemv(alpha, a, x, beta, |a, b| a.dotc(b))
     }
 
-
     #[inline(always)]
     fn gemv_xx<R2: Dim, C2: Dim, D3: Dim, SB, SC>(
         &mut self,
@@ -781,7 +800,6 @@ where
             }
         }
     }
-
 
     /// Computes `self = alpha * a.transpose() * x + beta * self`, where `a` is a matrix, `x` a vector, and
     /// `alpha, beta` two scalars.
@@ -1140,7 +1158,6 @@ where N: Scalar + Zero + ClosedAdd + ClosedMul
         }
     }
 
-
     /// Computes `self = alpha * a.adjoint() * b + beta * self`, where `a, b, self` are matrices.
     /// `alpha` and `beta` are scalar.
     ///
@@ -1175,8 +1192,8 @@ where N: Scalar + Zero + ClosedAdd + ClosedMul
         SB: Storage<N, R2, C2>,
         SC: Storage<N, R3, C3>,
         ShapeConstraint: SameNumberOfRows<R1, C2>
-        + SameNumberOfColumns<C1, C3>
-        + AreMultipliable<C2, R2, R3, C3>,
+            + SameNumberOfColumns<C1, C3>
+            + AreMultipliable<C2, R2, R3, C3>,
     {
         let (nrows1, ncols1) = self.shape();
         let (nrows2, ncols2) = a.shape();

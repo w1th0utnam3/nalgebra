@@ -1,18 +1,22 @@
 use num::Zero;
 
-use alga::general::{
-    AbstractGroup, AbstractGroupAbelian, AbstractLoop, AbstractMagma, AbstractModule,
-    AbstractMonoid, AbstractQuasigroup, AbstractSemigroup, Additive, Id, Identity, TwoSidedInverse, Module,
-    Multiplicative, RealField,
-};
-use alga::linear::{
-    AffineTransformation, DirectIsometry, FiniteDimVectorSpace, Isometry, NormedSpace,
-    OrthogonalTransformation, ProjectiveTransformation, Rotation, Similarity, Transformation,
-    VectorSpace,
+use alga::{
+    general::{
+        AbstractGroup, AbstractGroupAbelian, AbstractLoop, AbstractMagma, AbstractModule,
+        AbstractMonoid, AbstractQuasigroup, AbstractSemigroup, Additive, Id, Identity, Module,
+        Multiplicative, RealField, TwoSidedInverse,
+    },
+    linear::{
+        AffineTransformation, DirectIsometry, FiniteDimVectorSpace, Isometry, NormedSpace,
+        OrthogonalTransformation, ProjectiveTransformation, Rotation, Similarity, Transformation,
+        VectorSpace,
+    },
 };
 
-use crate::base::{Vector3, Vector4};
-use crate::geometry::{Point3, Quaternion, UnitQuaternion};
+use crate::{
+    base::{Vector3, Vector4},
+    geometry::{Point3, Quaternion, UnitQuaternion},
+};
 
 impl<N: RealField> Identity<Multiplicative> for Quaternion<N> {
     #[inline]

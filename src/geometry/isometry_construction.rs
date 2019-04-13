@@ -4,19 +4,22 @@ use crate::base::storage::Owned;
 use quickcheck::{Arbitrary, Gen};
 
 use num::One;
-use rand::distributions::{Distribution, Standard};
-use rand::Rng;
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
 
-use alga::general::RealField;
-use alga::linear::Rotation as AlgaRotation;
+use alga::{general::RealField, linear::Rotation as AlgaRotation};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, U2, U3};
-use crate::base::{DefaultAllocator, Vector2, Vector3};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimName, U2, U3},
+    DefaultAllocator, Vector2, Vector3,
+};
 
 use crate::geometry::{
-    Isometry, Point, Point3, Rotation, Rotation2, Rotation3, Translation, UnitComplex,
-    UnitQuaternion, Translation2, Translation3
+    Isometry, Point, Point3, Rotation, Rotation2, Rotation3, Translation, Translation2,
+    Translation3, UnitComplex, UnitQuaternion,
 };
 
 impl<N: RealField, D: DimName, R: AlgaRotation<Point<N, D>>> Isometry<N, D, R>

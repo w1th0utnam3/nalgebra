@@ -22,11 +22,13 @@ use std::ops::{Div, DivAssign, Index, Mul, MulAssign};
 
 use alga::general::{ClosedAdd, ClosedMul};
 
-use crate::base::allocator::Allocator;
-use crate::base::constraint::{AreMultipliable, ShapeConstraint};
-use crate::base::dimension::{Dim, DimName, U1};
-use crate::base::storage::Storage;
-use crate::base::{DefaultAllocator, Matrix, MatrixMN, Scalar, Unit, Vector, VectorN};
+use crate::base::{
+    allocator::Allocator,
+    constraint::{AreMultipliable, ShapeConstraint},
+    dimension::{Dim, DimName, U1},
+    storage::Storage,
+    DefaultAllocator, Matrix, MatrixMN, Scalar, Unit, Vector, VectorN,
+};
 
 use crate::geometry::{Point, Rotation};
 

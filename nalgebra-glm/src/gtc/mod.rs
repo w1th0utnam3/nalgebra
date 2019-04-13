@@ -8,8 +8,10 @@ pub use self::constants::{
     two_pi, two_thirds, zero,
 };
 //pub use self::integer::*;
-pub use self::matrix_access::{column, row, set_column, set_row};
-pub use self::matrix_inverse::{affine_inverse, inverse_transpose};
+pub use self::{
+    matrix_access::{column, row, set_column, set_row},
+    matrix_inverse::{affine_inverse, inverse_transpose},
+};
 //pub use self::packing::*;
 //pub use self::reciprocal::*;
 //pub use self::round::*;

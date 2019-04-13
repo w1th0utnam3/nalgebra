@@ -4,10 +4,12 @@ use crate::base::storage::Owned;
 use quickcheck::{Arbitrary, Gen};
 
 use num::{Bounded, One, Zero};
-use rand::distributions::{Distribution, Standard};
-use rand::Rng;
 #[cfg(feature = "std")]
 use rand::{self, distributions::StandardNormal};
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
 use std::iter;
 use typenum::{self, Cmp, Greater};
 
@@ -15,10 +17,12 @@ use typenum::{self, Cmp, Greater};
 use alga::general::RealField;
 use alga::general::{ClosedAdd, ClosedMul};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{Dim, DimName, Dynamic, U1, U2, U3, U4, U5, U6};
-use crate::base::storage::Storage;
-use crate::base::{DefaultAllocator, Matrix, MatrixMN, MatrixN, Scalar, Unit, Vector, VectorN};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{Dim, DimName, Dynamic, U1, U2, U3, U4, U5, U6},
+    storage::Storage,
+    DefaultAllocator, Matrix, MatrixMN, MatrixN, Scalar, Unit, Vector, VectorN,
+};
 
 /*
  *
@@ -709,8 +713,6 @@ impl_constructors_from_data!(data; Dynamic, Dynamic;
                             ;
                             Dynamic::new(nrows), Dynamic::new(ncols);
                             nrows, ncols);
-
-
 
 /*
  *

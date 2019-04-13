@@ -1,5 +1,7 @@
-use std::mem;
-use std::ops::{Deref, DerefMut};
+use std::{
+    mem,
+    ops::{Deref, DerefMut},
+};
 
 use alga::general::RealField;
 

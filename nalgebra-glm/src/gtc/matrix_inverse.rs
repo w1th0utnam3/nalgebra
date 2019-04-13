@@ -1,7 +1,9 @@
 use na::{DefaultAllocator, RealField};
 
-use crate::aliases::TMat;
-use crate::traits::{Alloc, Dimension};
+use crate::{
+    aliases::TMat,
+    traits::{Alloc, Dimension},
+};
 
 /// Fast matrix inverse for affine matrix.
 pub fn affine_inverse<N: RealField, D: Dimension>(m: TMat<N, D, D>) -> TMat<N, D, D>

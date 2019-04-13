@@ -5,11 +5,13 @@ use std::ops::{
 
 use alga::general::{ClosedAdd, ClosedDiv, ClosedMul, ClosedNeg, ClosedSub};
 
-use crate::base::allocator::{Allocator, SameShapeAllocator};
-use crate::base::constraint::{AreMultipliable, SameNumberOfColumns, SameNumberOfRows, ShapeConstraint};
-use crate::base::dimension::{Dim, DimName, U1};
-use crate::base::storage::Storage;
-use crate::base::{DefaultAllocator, Matrix, Scalar, Vector, VectorSum};
+use crate::base::{
+    allocator::{Allocator, SameShapeAllocator},
+    constraint::{AreMultipliable, SameNumberOfColumns, SameNumberOfRows, ShapeConstraint},
+    dimension::{Dim, DimName, U1},
+    storage::Storage,
+    DefaultAllocator, Matrix, Scalar, Vector, VectorSum,
+};
 
 use crate::geometry::Point;
 

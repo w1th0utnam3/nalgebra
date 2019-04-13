@@ -1,26 +1,29 @@
 use alga::general::{SubsetOf, SupersetOf};
 #[cfg(feature = "mint")]
 use mint;
-use std::convert::{AsMut, AsRef, From, Into};
-use std::mem;
-use std::ptr;
+use std::{
+    convert::{AsMut, AsRef, From, Into},
+    mem, ptr,
+};
 
 use generic_array::ArrayLength;
 use std::ops::Mul;
 use typenum::Prod;
 
-use crate::base::allocator::{Allocator, SameShapeAllocator};
-use crate::base::constraint::{SameNumberOfColumns, SameNumberOfRows, ShapeConstraint};
-use crate::base::dimension::{
-    Dim, DimName, U1, U10, U11, U12, U13, U14, U15, U16, U2, U3, U4, U5, U6, U7, U8, U9,
-};
 #[cfg(any(feature = "std", feature = "alloc"))]
 use crate::base::dimension::Dynamic;
-use crate::base::iter::{MatrixIter, MatrixIterMut};
-use crate::base::storage::{ContiguousStorage, ContiguousStorageMut, Storage, StorageMut};
 #[cfg(any(feature = "std", feature = "alloc"))]
 use crate::base::VecStorage;
-use crate::base::{DefaultAllocator, Matrix, ArrayStorage, MatrixMN, MatrixSlice, MatrixSliceMut, Scalar};
+use crate::base::{
+    allocator::{Allocator, SameShapeAllocator},
+    constraint::{SameNumberOfColumns, SameNumberOfRows, ShapeConstraint},
+    dimension::{
+        Dim, DimName, U1, U10, U11, U12, U13, U14, U15, U16, U2, U3, U4, U5, U6, U7, U8, U9,
+    },
+    iter::{MatrixIter, MatrixIterMut},
+    storage::{ContiguousStorage, ContiguousStorageMut, Storage, StorageMut},
+    ArrayStorage, DefaultAllocator, Matrix, MatrixMN, MatrixSlice, MatrixSliceMut, Scalar,
+};
 
 // FIXME: too bad this won't work allo slice conversions.
 impl<N1, N2, R1, C1, R2, C2> SubsetOf<MatrixMN<N2, R2, C2>> for MatrixMN<N1, R1, C1>
@@ -44,7 +47,9 @@ where
         let mut res = unsafe { MatrixMN::<N2, R2, C2>::new_uninitialized_generic(nrows2, ncols2) };
         for i in 0..nrows {
             for j in 0..ncols {
-                unsafe { *res.get_unchecked_mut((i, j)) = N2::from_subset(self.get_unchecked((i, j))) }
+                unsafe {
+                    *res.get_unchecked_mut((i, j)) = N2::from_subset(self.get_unchecked((i, j)))
+                }
             }
         }
 

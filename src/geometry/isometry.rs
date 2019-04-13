@@ -1,9 +1,7 @@
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
-use std::fmt;
-use std::hash;
 #[cfg(feature = "abomonation-serialize")]
 use std::io::{Result as IOResult, Write};
-use std::marker::PhantomData;
+use std::{fmt, hash, marker::PhantomData};
 
 #[cfg(feature = "serde-serialize")]
 use serde::{Deserialize, Serialize};
@@ -11,14 +9,20 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "abomonation-serialize")]
 use abomonation::Abomonation;
 
-use alga::general::{RealField, SubsetOf};
-use alga::linear::Rotation;
+use alga::{
+    general::{RealField, SubsetOf},
+    linear::Rotation,
+};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, DimNameAdd, DimNameSum, U1};
-use crate::base::storage::Owned;
-use crate::base::{DefaultAllocator, MatrixN, VectorN};
-use crate::geometry::{Point, Translation};
+use crate::{
+    base::{
+        allocator::Allocator,
+        dimension::{DimName, DimNameAdd, DimNameSum, U1},
+        storage::Owned,
+        DefaultAllocator, MatrixN, VectorN,
+    },
+    geometry::{Point, Translation},
+};
 
 /// A direct isometry, i.e., a rotation followed by a translation, aka. a rigid-body motion, aka. an element of a Special Euclidean (SE) group.
 #[repr(C)]
@@ -77,7 +81,8 @@ where
     }
 }
 
-impl<N: RealField + hash::Hash, D: DimName + hash::Hash, R: hash::Hash> hash::Hash for Isometry<N, D, R>
+impl<N: RealField + hash::Hash, D: DimName + hash::Hash, R: hash::Hash> hash::Hash
+    for Isometry<N, D, R>
 where
     DefaultAllocator: Allocator<N, D>,
     Owned<N, D>: hash::Hash,

@@ -2,10 +2,12 @@
 
 //! Traits and tags for identifying the dimension of all algebraic entities.
 
-use std::any::{Any, TypeId};
-use std::cmp;
-use std::fmt::Debug;
-use std::ops::{Add, Div, Mul, Sub};
+use std::{
+    any::{Any, TypeId},
+    cmp,
+    fmt::Debug,
+    ops::{Add, Div, Mul, Sub},
+};
 use typenum::{
     self, Bit, Diff, Max, Maximum, Min, Minimum, Prod, Quot, Sum, UInt, UTerm, Unsigned, B1,
 };

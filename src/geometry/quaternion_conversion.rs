@@ -1,16 +1,19 @@
 use num::Zero;
 
-use alga::general::{RealField, SubsetOf, SupersetOf};
-use alga::linear::Rotation as AlgaRotation;
+use alga::{
+    general::{RealField, SubsetOf, SupersetOf},
+    linear::Rotation as AlgaRotation,
+};
 
 #[cfg(feature = "mint")]
 use mint;
 
-use crate::base::dimension::U3;
-use crate::base::{Matrix3, Matrix4, Vector4};
-use crate::geometry::{
-    Isometry, Point3, Quaternion, Rotation, Rotation3, Similarity, SuperTCategoryOf, TAffine,
-    Transform, Translation, UnitQuaternion,
+use crate::{
+    base::{dimension::U3, Matrix3, Matrix4, Vector4},
+    geometry::{
+        Isometry, Point3, Quaternion, Rotation, Rotation3, Similarity, SuperTCategoryOf, TAffine,
+        Transform, Translation, UnitQuaternion,
+    },
 };
 
 /*

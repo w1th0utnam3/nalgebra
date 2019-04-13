@@ -1,17 +1,17 @@
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
-use std::any::Any;
-use std::fmt::Debug;
-use std::marker::PhantomData;
+use std::{any::Any, fmt::Debug, marker::PhantomData};
 
 #[cfg(feature = "serde-serialize")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use alga::general::{RealField, TwoSidedInverse};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, DimNameAdd, DimNameSum, U1};
-use crate::base::storage::Owned;
-use crate::base::{DefaultAllocator, MatrixN, VectorN};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimName, DimNameAdd, DimNameSum, U1},
+    storage::Owned,
+    DefaultAllocator, MatrixN, VectorN,
+};
 
 use crate::geometry::Point;
 
@@ -259,7 +259,7 @@ where DefaultAllocator: Allocator<N, DimNameSum<D, U1>, DimNameSum<D, U1>>
 
     /// Retrieves the underlying matrix.
     /// Deprecated: Use [Transform::into_inner] instead.
-    #[deprecated(note="use `.into_inner()` instead")]
+    #[deprecated(note = "use `.into_inner()` instead")]
     #[inline]
     pub fn unwrap(self) -> MatrixN<N, DimNameSum<D, U1>> {
         self.matrix
@@ -482,8 +482,9 @@ where
 }
 
 impl<N: RealField, D: DimNameAdd<U1>, C: TCategory> Transform<N, D, C>
-where C: SubTCategoryOf<TProjective>,
-      DefaultAllocator: Allocator<N, DimNameSum<D, U1>, DimNameSum<D, U1>>
+where
+    C: SubTCategoryOf<TProjective>,
+    DefaultAllocator: Allocator<N, DimNameSum<D, U1>, DimNameSum<D, U1>>
         + Allocator<N, DimNameSum<D, U1>>
         + Allocator<N, D, D>
         + Allocator<N, D>,

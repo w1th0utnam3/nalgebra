@@ -1,8 +1,10 @@
-use std::fmt::{self, Debug, Formatter};
-use std::hash::{Hash, Hasher};
 #[cfg(feature = "abomonation-serialize")]
 use std::io::{Result as IOResult, Write};
-use std::ops::{Deref, DerefMut, Mul};
+use std::{
+    fmt::{self, Debug, Formatter},
+    hash::{Hash, Hasher},
+    ops::{Deref, DerefMut, Mul},
+};
 
 #[cfg(feature = "serde-serialize")]
 use serde::de::{Error, SeqAccess, Visitor};
@@ -21,11 +23,13 @@ use abomonation::Abomonation;
 use generic_array::{ArrayLength, GenericArray};
 use typenum::Prod;
 
-use crate::base::allocator::Allocator;
-use crate::base::default_allocator::DefaultAllocator;
-use crate::base::dimension::{DimName, U1};
-use crate::base::storage::{ContiguousStorage, ContiguousStorageMut, Owned, Storage, StorageMut};
-use crate::base::Scalar;
+use crate::base::{
+    allocator::Allocator,
+    default_allocator::DefaultAllocator,
+    dimension::{DimName, U1},
+    storage::{ContiguousStorage, ContiguousStorageMut, Owned, Storage, StorageMut},
+    Scalar,
+};
 
 /*
  *
@@ -44,7 +48,7 @@ where
     data: GenericArray<N, Prod<R::Value, C::Value>>,
 }
 
-#[deprecated(note="renamed to `ArrayStorage`")]
+#[deprecated(note = "renamed to `ArrayStorage`")]
 /// Renamed to [ArrayStorage].
 pub type MatrixArray<N, R, C> = ArrayStorage<N, R, C>;
 
@@ -111,7 +115,8 @@ where
     R::Value: Mul<C::Value>,
     Prod<R::Value, C::Value>: ArrayLength<N>,
     GenericArray<N, Prod<R::Value, C::Value>>: Copy,
-{}
+{
+}
 
 impl<N, R, C> Clone for ArrayStorage<N, R, C>
 where
@@ -136,7 +141,8 @@ where
     C: DimName,
     R::Value: Mul<C::Value>,
     Prod<R::Value, C::Value>: ArrayLength<N>,
-{}
+{
+}
 
 impl<N, R, C> PartialEq for ArrayStorage<N, R, C>
 where
@@ -232,7 +238,8 @@ where
     R::Value: Mul<C::Value>,
     Prod<R::Value, C::Value>: ArrayLength<N>,
     DefaultAllocator: Allocator<N, R, C, Buffer = Self>,
-{}
+{
+}
 
 unsafe impl<N, R, C> ContiguousStorageMut<N, R, C> for ArrayStorage<N, R, C>
 where
@@ -242,7 +249,8 @@ where
     R::Value: Mul<C::Value>,
     Prod<R::Value, C::Value>: ArrayLength<N>,
     DefaultAllocator: Allocator<N, R, C, Buffer = Self>,
-{}
+{
+}
 
 /*
  *
@@ -331,7 +339,8 @@ where
         let mut curr = 0;
 
         while let Some(value) = visitor.next_element()? {
-            *out.get_mut(curr).ok_or_else(|| V::Error::invalid_length(curr, &self))? = value;
+            *out.get_mut(curr)
+                .ok_or_else(|| V::Error::invalid_length(curr, &self))? = value;
             curr += 1;
         }
 

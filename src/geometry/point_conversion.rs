@@ -1,9 +1,11 @@
 use alga::general::{ClosedDiv, SubsetOf, SupersetOf};
 use num::{One, Zero};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, DimNameAdd, DimNameSum, U1};
-use crate::base::{DefaultAllocator, Matrix, Scalar, VectorN};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimName, DimNameAdd, DimNameSum, U1},
+    DefaultAllocator, Matrix, Scalar, VectorN,
+};
 
 #[cfg(feature = "mint")]
 use crate::base::dimension::{U2, U3};
@@ -74,7 +76,7 @@ where
     unsafe fn from_superset_unchecked(v: &VectorN<N2, DimNameSum<D, U1>>) -> Self {
         let coords = v.fixed_slice::<D, U1>(0, 0) / v[D::dim()];
         Self {
-            coords: crate::convert_unchecked(coords)
+            coords: crate::convert_unchecked(coords),
         }
     }
 }
@@ -142,13 +144,10 @@ where
 }
 
 impl<N: Scalar, D: DimName> From<VectorN<N, D>> for Point<N, D>
-    where
-        DefaultAllocator: Allocator<N, D>,
+where DefaultAllocator: Allocator<N, D>
 {
     #[inline]
     fn from(coords: VectorN<N, D>) -> Self {
-        Point {
-            coords
-        }
+        Point { coords }
     }
 }

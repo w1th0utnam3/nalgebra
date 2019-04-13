@@ -1,7 +1,9 @@
 use na::{DefaultAllocator, RealField};
 
-use crate::aliases::{TVec, TVec2, TVec3};
-use crate::traits::{Alloc, Dimension, Number};
+use crate::{
+    aliases::{TVec, TVec2, TVec3},
+    traits::{Alloc, Dimension, Number},
+};
 
 /// Returns `true` if two vectors are collinear (up to an epsilon).
 ///

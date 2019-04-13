@@ -1,11 +1,17 @@
-use alga::general::{RealField, SubsetOf, SupersetOf};
-use alga::linear::Rotation;
+use alga::{
+    general::{RealField, SubsetOf, SupersetOf},
+    linear::Rotation,
+};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimMin, DimName, DimNameAdd, DimNameSum, U1};
-use crate::base::{DefaultAllocator, MatrixN};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimMin, DimName, DimNameAdd, DimNameSum, U1},
+    DefaultAllocator, MatrixN,
+};
 
-use crate::geometry::{Isometry, Point, Similarity, SuperTCategoryOf, TAffine, Transform, Translation};
+use crate::geometry::{
+    Isometry, Point, Similarity, SuperTCategoryOf, TAffine, Transform, Translation,
+};
 
 /*
  * This file provides the following conversions:
@@ -159,7 +165,11 @@ where
             vector: crate::convert_unchecked(t),
         };
 
-        Self::from_parts(t, crate::convert_unchecked(mm), crate::convert_unchecked(scale))
+        Self::from_parts(
+            t,
+            crate::convert_unchecked(mm),
+            crate::convert_unchecked(scale),
+        )
     }
 }
 

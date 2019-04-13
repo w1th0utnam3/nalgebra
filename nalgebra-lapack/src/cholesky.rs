@@ -4,10 +4,10 @@ use serde::{Deserialize, Serialize};
 use num::Zero;
 use num_complex::Complex;
 
-use na::allocator::Allocator;
-use na::dimension::Dim;
-use na::storage::Storage;
-use na::{DefaultAllocator, Matrix, MatrixMN, MatrixN, Scalar};
+use na::{
+    allocator::Allocator, dimension::Dim, storage::Storage, DefaultAllocator, Matrix, MatrixMN,
+    MatrixN, Scalar,
+};
 
 use lapack;
 
@@ -15,17 +15,13 @@ use lapack;
 #[cfg_attr(feature = "serde-serialize", derive(Serialize, Deserialize))]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        serialize = "DefaultAllocator: Allocator<N, D>,
-         MatrixN<N, D>: Serialize"
-    ))
+    serde(bound(serialize = "DefaultAllocator: Allocator<N, D>,
+         MatrixN<N, D>: Serialize"))
 )]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        deserialize = "DefaultAllocator: Allocator<N, D>,
-         MatrixN<N, D>: Deserialize<'de>"
-    ))
+    serde(bound(deserialize = "DefaultAllocator: Allocator<N, D>,
+         MatrixN<N, D>: Deserialize<'de>"))
 )]
 #[derive(Clone, Debug)]
 pub struct Cholesky<N: Scalar, D: Dim>
@@ -38,7 +34,8 @@ impl<N: Scalar, D: Dim> Copy for Cholesky<N, D>
 where
     DefaultAllocator: Allocator<N, D, D>,
     MatrixN<N, D>: Copy,
-{}
+{
+}
 
 impl<N: CholeskyScalar + Zero, D: Dim> Cholesky<N, D>
 where DefaultAllocator: Allocator<N, D, D>

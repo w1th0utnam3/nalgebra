@@ -1,5 +1,4 @@
-pub use self::matrix::matrix;
-pub use self::vector::vector;
+pub use self::{matrix::matrix, vector::vector};
 
 mod matrix;
 mod vector;

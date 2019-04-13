@@ -1,16 +1,15 @@
-use alga::general::{
-    AbstractGroup, AbstractLoop, AbstractMagma, AbstractMonoid, AbstractQuasigroup,
-    AbstractSemigroup, Id, Identity, TwoSidedInverse, Multiplicative, RealField,
-};
-use alga::linear::Translation as AlgaTranslation;
-use alga::linear::{
-    AffineTransformation, DirectIsometry, Isometry, ProjectiveTransformation, Similarity,
-    Transformation,
+use alga::{
+    general::{
+        AbstractGroup, AbstractLoop, AbstractMagma, AbstractMonoid, AbstractQuasigroup,
+        AbstractSemigroup, Id, Identity, Multiplicative, RealField, TwoSidedInverse,
+    },
+    linear::{
+        AffineTransformation, DirectIsometry, Isometry, ProjectiveTransformation, Similarity,
+        Transformation, Translation as AlgaTranslation,
+    },
 };
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::DimName;
-use crate::base::{DefaultAllocator, VectorN};
+use crate::base::{allocator::Allocator, dimension::DimName, DefaultAllocator, VectorN};
 
 use crate::geometry::{Point, Translation};
 

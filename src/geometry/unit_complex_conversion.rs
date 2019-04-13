@@ -1,14 +1,17 @@
 use num::Zero;
 use num_complex::Complex;
 
-use alga::general::{RealField, SubsetOf, SupersetOf};
-use alga::linear::Rotation as AlgaRotation;
+use alga::{
+    general::{RealField, SubsetOf, SupersetOf},
+    linear::Rotation as AlgaRotation,
+};
 
-use crate::base::dimension::U2;
-use crate::base::{Matrix2, Matrix3};
-use crate::geometry::{
-    Isometry, Point2, Rotation2, Similarity, SuperTCategoryOf, TAffine, Transform, Translation,
-    UnitComplex
+use crate::{
+    base::{dimension::U2, Matrix2, Matrix3},
+    geometry::{
+        Isometry, Point2, Rotation2, Similarity, SuperTCategoryOf, TAffine, Transform, Translation,
+        UnitComplex,
+    },
 };
 
 /*
@@ -153,7 +156,6 @@ impl<N1: RealField, N2: RealField + SupersetOf<N1>> SubsetOf<Matrix3<N2>> for Un
         Self::from_rotation_matrix(&rot)
     }
 }
-
 
 impl<N: RealField> From<UnitComplex<N>> for Rotation2<N> {
     #[inline]

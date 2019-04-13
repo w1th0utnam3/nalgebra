@@ -9,7 +9,12 @@ use crate::aliases::{TMat4, TVec2, TVec3, TVec4};
 /// * `center` - Specify the center of a picking region in window coordinates.
 /// * `delta` - Specify the width and height, respectively, of the picking region in window coordinates.
 /// * `viewport` - Rendering viewport.
-pub fn pick_matrix<N: RealField>(center: &TVec2<N>, delta: &TVec2<N>, viewport: &TVec4<N>) -> TMat4<N> {
+pub fn pick_matrix<N: RealField>(
+    center: &TVec2<N>,
+    delta: &TVec2<N>,
+    viewport: &TVec4<N>,
+) -> TMat4<N>
+{
     let shift = TVec3::new(
         (viewport.z - (center.x - viewport.x) * na::convert(2.0)) / delta.x,
         (viewport.w - (center.y - viewport.y) * na::convert(2.0)) / delta.y,

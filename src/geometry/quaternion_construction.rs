@@ -6,14 +6,14 @@ use crate::base::storage::Owned;
 use quickcheck::{Arbitrary, Gen};
 
 use num::{One, Zero};
-use rand::distributions::{Distribution, OpenClosed01, Standard};
-use rand::Rng;
+use rand::{
+    distributions::{Distribution, OpenClosed01, Standard},
+    Rng,
+};
 
 use alga::general::RealField;
 
-use crate::base::dimension::U3;
-use crate::base::storage::Storage;
-use crate::base::{Unit, Vector, Vector3, Vector4, Matrix3};
+use crate::base::{dimension::U3, storage::Storage, Matrix3, Unit, Vector, Vector3, Vector4};
 
 use crate::geometry::{Quaternion, Rotation3, UnitQuaternion};
 
@@ -492,7 +492,7 @@ impl<N: RealField> UnitQuaternion<N> {
     }
 
     /// Deprecated: Use [UnitQuaternion::face_towards] instead.
-    #[deprecated(note="renamed to `face_towards`")]
+    #[deprecated(note = "renamed to `face_towards`")]
     pub fn new_observer_frames<SB, SC>(dir: &Vector<N, U3, SB>, up: &Vector<N, U3, SC>) -> Self
     where
         SB: Storage<N, U3>,

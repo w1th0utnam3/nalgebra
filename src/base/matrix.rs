@@ -3,12 +3,14 @@ use num::{One, Zero};
 use std::io::{Result as IOResult, Write};
 
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
-use std::any::TypeId;
-use std::cmp::Ordering;
-use std::fmt;
-use std::hash::{Hash, Hasher};
-use std::marker::PhantomData;
-use std::mem;
+use std::{
+    any::TypeId,
+    cmp::Ordering,
+    fmt,
+    hash::{Hash, Hasher},
+    marker::PhantomData,
+    mem,
+};
 
 #[cfg(feature = "serde-serialize")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -16,16 +18,18 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 #[cfg(feature = "abomonation-serialize")]
 use abomonation::Abomonation;
 
-use alga::general::{ClosedAdd, ClosedMul, ClosedSub, RealField, Ring, ComplexField, Field};
+use alga::general::{ClosedAdd, ClosedMul, ClosedSub, ComplexField, Field, RealField, Ring};
 
-use crate::base::allocator::{Allocator, SameShapeAllocator, SameShapeC, SameShapeR};
-use crate::base::constraint::{DimEq, SameNumberOfColumns, SameNumberOfRows, ShapeConstraint};
-use crate::base::dimension::{Dim, DimAdd, DimSum, IsNotStaticOne, U1, U2, U3};
-use crate::base::iter::{MatrixIter, MatrixIterMut, RowIter, RowIterMut, ColumnIter, ColumnIterMut};
-use crate::base::storage::{
-    ContiguousStorage, ContiguousStorageMut, Owned, SameShapeStorage, Storage, StorageMut,
+use crate::base::{
+    allocator::{Allocator, SameShapeAllocator, SameShapeC, SameShapeR},
+    constraint::{DimEq, SameNumberOfColumns, SameNumberOfRows, ShapeConstraint},
+    dimension::{Dim, DimAdd, DimSum, IsNotStaticOne, U1, U2, U3},
+    iter::{ColumnIter, ColumnIterMut, MatrixIter, MatrixIterMut, RowIter, RowIterMut},
+    storage::{
+        ContiguousStorage, ContiguousStorageMut, Owned, SameShapeStorage, Storage, StorageMut,
+    },
+    DefaultAllocator, MatrixMN, MatrixN, Scalar, Unit, VectorN,
 };
-use crate::base::{DefaultAllocator, MatrixMN, MatrixN, Scalar, Unit, VectorN};
 
 /// A square matrix.
 pub type SquareMatrix<N, D, S> = Matrix<N, D, D, S>;
@@ -553,13 +557,18 @@ impl<N: Scalar, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S> {
 
     /// Folds a function `f` on each pairs of entries from `self` and `rhs`.
     #[inline]
-    pub fn zip_fold<N2, R2, C2, S2, Acc>(&self, rhs: &Matrix<N2, R2, C2, S2>, init: Acc, mut f: impl FnMut(Acc, N, N2) -> Acc) -> Acc
-        where
-            N2: Scalar,
-            R2: Dim,
-            C2: Dim,
-            S2: Storage<N2, R2, C2>,
-            ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2>
+    pub fn zip_fold<N2, R2, C2, S2, Acc>(
+        &self,
+        rhs: &Matrix<N2, R2, C2, S2>,
+        init: Acc,
+        mut f: impl FnMut(Acc, N, N2) -> Acc,
+    ) -> Acc
+    where
+        N2: Scalar,
+        R2: Dim,
+        C2: Dim,
+        S2: Storage<N2, R2, C2>,
+        ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2>,
     {
         let (nrows, ncols) = self.data.shape();
 
@@ -773,7 +782,7 @@ impl<N: Scalar, R: Dim, C: Dim, S: StorageMut<N, R, C>> Matrix<N, R, C, S> {
     // FIXME: rename `apply` to `apply_mut` and `apply_into` to `apply`?
     /// Returns `self` with each of its components replaced by the result of a closure `f` applied on it.
     #[inline]
-    pub fn apply_into<F: FnMut(N) -> N>(mut self, f: F) -> Self{
+    pub fn apply_into<F: FnMut(N) -> N>(mut self, f: F) -> Self {
         self.apply(f);
         self
     }
@@ -796,12 +805,17 @@ impl<N: Scalar, R: Dim, C: Dim, S: StorageMut<N, R, C>> Matrix<N, R, C, S> {
     /// Replaces each component of `self` by the result of a closure `f` applied on its components
     /// joined with the components from `rhs`.
     #[inline]
-    pub fn zip_apply<N2, R2, C2, S2>(&mut self, rhs: &Matrix<N2, R2, C2, S2>, mut f: impl FnMut(N, N2) -> N)
-        where N2: Scalar,
-              R2: Dim,
-              C2: Dim,
-              S2: Storage<N2, R2, C2>,
-              ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2> {
+    pub fn zip_apply<N2, R2, C2, S2>(
+        &mut self,
+        rhs: &Matrix<N2, R2, C2, S2>,
+        mut f: impl FnMut(N, N2) -> N,
+    ) where
+        N2: Scalar,
+        R2: Dim,
+        C2: Dim,
+        S2: Storage<N2, R2, C2>,
+        ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2>,
+    {
         let (nrows, ncols) = self.shape();
 
         assert!(
@@ -820,21 +834,26 @@ impl<N: Scalar, R: Dim, C: Dim, S: StorageMut<N, R, C>> Matrix<N, R, C, S> {
         }
     }
 
-
     /// Replaces each component of `self` by the result of a closure `f` applied on its components
     /// joined with the components from `b` and `c`.
     #[inline]
-    pub fn zip_zip_apply<N2, R2, C2, S2, N3, R3, C3, S3>(&mut self, b: &Matrix<N2, R2, C2, S2>, c: &Matrix<N3, R3, C3, S3>, mut f: impl FnMut(N, N2, N3) -> N)
-        where N2: Scalar,
-              R2: Dim,
-              C2: Dim,
-              S2: Storage<N2, R2, C2>,
-              N3: Scalar,
-              R3: Dim,
-              C3: Dim,
-              S3: Storage<N3, R3, C3>,
-              ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2>,
-              ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2> {
+    pub fn zip_zip_apply<N2, R2, C2, S2, N3, R3, C3, S3>(
+        &mut self,
+        b: &Matrix<N2, R2, C2, S2>,
+        c: &Matrix<N3, R3, C3, S3>,
+        mut f: impl FnMut(N, N2, N3) -> N,
+    ) where
+        N2: Scalar,
+        R2: Dim,
+        C2: Dim,
+        S2: Storage<N2, R2, C2>,
+        N3: Scalar,
+        R3: Dim,
+        C3: Dim,
+        S3: Storage<N3, R3, C3>,
+        ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2>,
+        ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2>,
+    {
         let (nrows, ncols) = self.shape();
 
         assert!(
@@ -957,11 +976,11 @@ impl<N: ComplexField, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S> {
     #[deprecated(note = "Renamed `self.adjoint_to(out)`.")]
     #[inline]
     pub fn conjugate_transpose_to<R2, C2, SB>(&self, out: &mut Matrix<N, R2, C2, SB>)
-        where
-            R2: Dim,
-            C2: Dim,
-            SB: StorageMut<N, R2, C2>,
-            ShapeConstraint: SameNumberOfRows<R, C2> + SameNumberOfColumns<C, R2>,
+    where
+        R2: Dim,
+        C2: Dim,
+        SB: StorageMut<N, R2, C2>,
+        ShapeConstraint: SameNumberOfRows<R, C2> + SameNumberOfColumns<C, R2>,
     {
         self.adjoint_to(out)
     }
@@ -970,28 +989,28 @@ impl<N: ComplexField, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S> {
     #[deprecated(note = "Renamed `self.adjoint()`.")]
     #[inline]
     pub fn conjugate_transpose(&self) -> MatrixMN<N, C, R>
-        where DefaultAllocator: Allocator<N, C, R> {
+    where DefaultAllocator: Allocator<N, C, R> {
         self.adjoint()
     }
 
     /// The conjugate of `self`.
     #[inline]
     pub fn conjugate(&self) -> MatrixMN<N, R, C>
-        where DefaultAllocator: Allocator<N, R, C> {
+    where DefaultAllocator: Allocator<N, R, C> {
         self.map(|e| e.conjugate())
     }
 
     /// Divides each component of the complex matrix `self` by the given real.
     #[inline]
     pub fn unscale(&self, real: N::RealField) -> MatrixMN<N, R, C>
-        where DefaultAllocator: Allocator<N, R, C> {
+    where DefaultAllocator: Allocator<N, R, C> {
         self.map(|e| e.unscale(real))
     }
 
     /// Multiplies each component of the complex matrix `self` by the given real.
     #[inline]
     pub fn scale(&self, real: N::RealField) -> MatrixMN<N, R, C>
-        where DefaultAllocator: Allocator<N, R, C> {
+    where DefaultAllocator: Allocator<N, R, C> {
         self.map(|e| e.scale(real))
     }
 }
@@ -1056,7 +1075,7 @@ impl<N: Scalar, D: Dim, S: Storage<N, D, D>> SquareMatrix<N, D, S> {
     /// The diagonal of this matrix.
     #[inline]
     pub fn diagonal(&self) -> VectorN<N, D>
-        where DefaultAllocator: Allocator<N, D> {
+    where DefaultAllocator: Allocator<N, D> {
         self.map_diagonal(|e| e)
     }
 
@@ -1065,7 +1084,7 @@ impl<N: Scalar, D: Dim, S: Storage<N, D, D>> SquareMatrix<N, D, S> {
     /// This is a more efficient version of `self.diagonal().map(f)` since this
     /// allocates only once.
     pub fn map_diagonal<N2: Scalar>(&self, mut f: impl FnMut(N) -> N2) -> VectorN<N2, D>
-        where DefaultAllocator: Allocator<N2, D> {
+    where DefaultAllocator: Allocator<N2, D> {
         assert!(
             self.is_square(),
             "Unable to get the diagonal of a non-square matrix."
@@ -1086,7 +1105,7 @@ impl<N: Scalar, D: Dim, S: Storage<N, D, D>> SquareMatrix<N, D, S> {
     /// Computes a trace of a square matrix, i.e., the sum of its diagonal elements.
     #[inline]
     pub fn trace(&self) -> N
-        where N: Ring {
+    where N: Ring {
         assert!(
             self.is_square(),
             "Cannot compute the trace of non-square matrix."
@@ -1107,8 +1126,11 @@ impl<N: ComplexField, D: Dim, S: Storage<N, D, D>> SquareMatrix<N, D, S> {
     /// The symmetric part of `self`, i.e., `0.5 * (self + self.transpose())`.
     #[inline]
     pub fn symmetric_part(&self) -> MatrixMN<N, D, D>
-        where DefaultAllocator: Allocator<N, D, D> {
-        assert!(self.is_square(), "Cannot compute the symmetric part of a non-square matrix.");
+    where DefaultAllocator: Allocator<N, D, D> {
+        assert!(
+            self.is_square(),
+            "Cannot compute the symmetric part of a non-square matrix."
+        );
         let mut tr = self.transpose();
         tr += self;
         tr *= crate::convert::<_, N>(0.5);
@@ -1118,8 +1140,11 @@ impl<N: ComplexField, D: Dim, S: Storage<N, D, D>> SquareMatrix<N, D, S> {
     /// The hermitian part of `self`, i.e., `0.5 * (self + self.adjoint())`.
     #[inline]
     pub fn hermitian_part(&self) -> MatrixMN<N, D, D>
-        where DefaultAllocator: Allocator<N, D, D> {
-        assert!(self.is_square(), "Cannot compute the hermitian part of a non-square matrix.");
+    where DefaultAllocator: Allocator<N, D, D> {
+        assert!(
+            self.is_square(),
+            "Cannot compute the hermitian part of a non-square matrix."
+        );
 
         let mut tr = self.adjoint();
         tr += self;
@@ -1128,20 +1153,24 @@ impl<N: ComplexField, D: Dim, S: Storage<N, D, D>> SquareMatrix<N, D, S> {
     }
 }
 
-impl<N: Scalar + One + Zero, D: DimAdd<U1> + IsNotStaticOne, S: Storage<N, D, D>> Matrix<N, D, D, S> {
-
+impl<N: Scalar + One + Zero, D: DimAdd<U1> + IsNotStaticOne, S: Storage<N, D, D>>
+    Matrix<N, D, D, S>
+{
     /// Yields the homogeneous matrix for this matrix, i.e., appending an additional dimension and
     /// and setting the diagonal element to `1`.
     #[inline]
     pub fn to_homogeneous(&self) -> MatrixN<N, DimSum<D, U1>>
     where DefaultAllocator: Allocator<N, DimSum<D, U1>, DimSum<D, U1>> {
-        assert!(self.is_square(), "Only square matrices can currently be transformed to homogeneous coordinates.");
+        assert!(
+            self.is_square(),
+            "Only square matrices can currently be transformed to homogeneous coordinates."
+        );
         let dim = DimSum::<D, U1>::from_usize(self.nrows() + 1);
-        let mut res = MatrixN::identity_generic(dim, dim); 
-        res.generic_slice_mut::<D, D>((0, 0), self.data.shape()).copy_from(&self);
+        let mut res = MatrixN::identity_generic(dim, dim);
+        res.generic_slice_mut::<D, D>((0, 0), self.data.shape())
+            .copy_from(&self);
         res
     }
-
 }
 
 impl<N: Scalar + Zero, D: DimAdd<U1>, S: Storage<N, D>> Vector<N, D, S> {
@@ -1342,7 +1371,8 @@ impl<N, R: Dim, C: Dim, S> Eq for Matrix<N, R, C, S>
 where
     N: Scalar + Eq,
     S: Storage<N, R, C>,
-{}
+{
+}
 
 impl<N, R: Dim, C: Dim, S> PartialEq for Matrix<N, R, C, S>
 where
@@ -1731,7 +1761,7 @@ where
         for j in 0..ncols {
             for i in 0..nrows {
                 unsafe {
-                     self.get_unchecked((i, j)).hash(state);
+                    self.get_unchecked((i, j)).hash(state);
                 }
             }
         }

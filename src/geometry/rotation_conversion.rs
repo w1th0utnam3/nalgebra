@@ -1,14 +1,18 @@
 use num::Zero;
 
-use alga::general::{RealField, SubsetOf, SupersetOf};
-use alga::linear::Rotation as AlgaRotation;
+use alga::{
+    general::{RealField, SubsetOf, SupersetOf},
+    linear::Rotation as AlgaRotation,
+};
 
 #[cfg(feature = "mint")]
 use mint;
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimMin, DimName, DimNameAdd, DimNameSum, U1};
-use crate::base::{DefaultAllocator, Matrix2, Matrix3, Matrix4, MatrixN};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimMin, DimName, DimNameAdd, DimNameSum, U1},
+    DefaultAllocator, Matrix2, Matrix3, Matrix4, MatrixN,
+};
 
 use crate::geometry::{
     Isometry, Point, Rotation, Rotation2, Rotation3, Similarity, SuperTCategoryOf, TAffine,
@@ -219,7 +223,7 @@ impl<N: RealField> From<mint::EulerAngles<N, mint::IntraXYZ>> for Rotation3<N> {
 
 impl<N: RealField> From<Rotation2<N>> for Matrix3<N> {
     #[inline]
-    fn from(q: Rotation2<N>) ->Self {
+    fn from(q: Rotation2<N>) -> Self {
         q.to_homogeneous()
     }
 }

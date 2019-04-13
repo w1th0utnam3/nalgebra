@@ -1,7 +1,9 @@
 use na::{DefaultAllocator, RealField};
 
-use crate::aliases::TVec;
-use crate::traits::{Alloc, Dimension};
+use crate::{
+    aliases::TVec,
+    traits::{Alloc, Dimension},
+};
 
 /// The squared distance between two points.
 ///

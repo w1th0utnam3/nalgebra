@@ -1,7 +1,9 @@
 use na::{DefaultAllocator, Scalar};
 
-use crate::aliases::{TMat, TVec};
-use crate::traits::{Alloc, Dimension};
+use crate::{
+    aliases::{TMat, TVec},
+    traits::{Alloc, Dimension},
+};
 
 /// The `index`-th column of the matrix `m`.
 ///

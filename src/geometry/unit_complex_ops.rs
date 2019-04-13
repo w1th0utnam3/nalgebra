@@ -1,11 +1,15 @@
 use std::ops::{Div, DivAssign, Mul, MulAssign};
 
+use crate::{
+    base::{
+        allocator::Allocator,
+        dimension::{U1, U2},
+        storage::Storage,
+        DefaultAllocator, Unit, Vector, Vector2,
+    },
+    geometry::{Isometry, Point2, Rotation, Similarity, Translation, UnitComplex},
+};
 use alga::general::RealField;
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{U1, U2};
-use crate::base::storage::Storage;
-use crate::base::{DefaultAllocator, Unit, Vector, Vector2};
-use crate::geometry::{Isometry, Point2, Rotation, Similarity, Translation, UnitComplex};
 
 /*
  * This file provides:

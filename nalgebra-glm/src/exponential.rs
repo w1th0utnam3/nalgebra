@@ -1,6 +1,8 @@
-use crate::aliases::TVec;
+use crate::{
+    aliases::TVec,
+    traits::{Alloc, Dimension},
+};
 use na::{DefaultAllocator, RealField};
-use crate::traits::{Alloc, Dimension};
 
 /// Component-wise exponential.
 ///

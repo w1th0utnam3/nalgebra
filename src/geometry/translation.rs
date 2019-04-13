@@ -1,9 +1,8 @@
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
 use num::{One, Zero};
-use std::fmt;
-use std::hash;
 #[cfg(feature = "abomonation-serialize")]
 use std::io::{Result as IOResult, Write};
+use std::{fmt, hash};
 
 #[cfg(feature = "serde-serialize")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -13,10 +12,12 @@ use abomonation::Abomonation;
 
 use alga::general::{ClosedAdd, ClosedNeg, ClosedSub, RealField};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, DimNameAdd, DimNameSum, U1};
-use crate::base::storage::Owned;
-use crate::base::{DefaultAllocator, MatrixN, Scalar, VectorN};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimName, DimNameAdd, DimNameSum, U1},
+    storage::Owned,
+    DefaultAllocator, MatrixN, Scalar, VectorN,
+};
 
 use crate::geometry::Point;
 
@@ -45,7 +46,8 @@ impl<N: Scalar, D: DimName> Copy for Translation<N, D>
 where
     DefaultAllocator: Allocator<N, D>,
     Owned<N, D>: Copy,
-{}
+{
+}
 
 impl<N: Scalar, D: DimName> Clone for Translation<N, D>
 where

@@ -10,9 +10,9 @@ extern crate num_traits as num;
 #[cfg(feature = "arbitrary")]
 #[macro_use]
 extern crate quickcheck;
+extern crate num_complex;
 extern crate rand;
 extern crate serde_json;
-extern crate num_complex;
 
 mod core;
 mod geometry;

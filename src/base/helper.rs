@@ -1,7 +1,9 @@
 #[cfg(feature = "arbitrary")]
 use quickcheck::{Arbitrary, Gen};
-use rand::distributions::{Distribution, Standard};
-use rand::Rng;
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
 
 /// Simple helper function for rejection sampling
 #[cfg(feature = "arbitrary")]

@@ -1,11 +1,13 @@
 // This module implement several methods to fill some
 // missing features of num-complex when it comes to randomness.
 
-use quickcheck::{Arbitrary, Gen};
-use rand::distributions::{Standard, Distribution};
-use rand::Rng;
-use num_complex::Complex;
 use na::RealField;
+use num_complex::Complex;
+use quickcheck::{Arbitrary, Gen};
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct RandComplex<N>(pub Complex<N>);
@@ -20,8 +22,7 @@ impl<N: Arbitrary + RealField> Arbitrary for RandComplex<N> {
 }
 
 impl<N: RealField> Distribution<RandComplex<N>> for Standard
-    where
-        Standard: Distribution<N>,
+where Standard: Distribution<N>
 {
     #[inline]
     fn sample<'a, G: Rng + ?Sized>(&self, rng: &'a mut G) -> RandComplex<N> {
@@ -44,8 +45,7 @@ impl<N: Arbitrary> Arbitrary for RandScalar<N> {
 }
 
 impl<N: RealField> Distribution<RandScalar<N>> for Standard
-    where
-        Standard: Distribution<N>,
+where Standard: Distribution<N>
 {
     #[inline]
     fn sample<'a, G: Rng + ?Sized>(&self, rng: &'a mut G) -> RandScalar<N> {

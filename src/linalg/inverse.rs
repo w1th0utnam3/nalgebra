@@ -1,9 +1,11 @@
 use alga::general::ComplexField;
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::Dim;
-use crate::base::storage::{Storage, StorageMut};
-use crate::base::{DefaultAllocator, MatrixN, SquareMatrix};
+use crate::base::{
+    allocator::Allocator,
+    dimension::Dim,
+    storage::{Storage, StorageMut},
+    DefaultAllocator, MatrixN, SquareMatrix,
+};
 
 use crate::linalg::lu;
 

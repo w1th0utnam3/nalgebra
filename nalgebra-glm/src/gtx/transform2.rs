@@ -1,7 +1,9 @@
 use na::{U2, U3};
 
-use crate::aliases::{TMat3, TMat4, TVec2, TVec3};
-use crate::traits::Number;
+use crate::{
+    aliases::{TMat3, TMat4, TVec2, TVec3},
+    traits::Number,
+};
 
 /// Build planar projection matrix along normal axis and right-multiply it to `m`.
 pub fn proj2d<N: Number>(m: &TMat3<N>, normal: &TVec2<N>) -> TMat3<N> {

@@ -56,10 +56,12 @@ use std::ops::{
 
 use alga::general::RealField;
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{U1, U3, U4};
-use crate::base::storage::Storage;
-use crate::base::{DefaultAllocator, Unit, Vector, Vector3};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{U1, U3, U4},
+    storage::Storage,
+    DefaultAllocator, Unit, Vector, Vector3,
+};
 
 use crate::geometry::{Point3, Quaternion, Rotation, UnitQuaternion};
 

@@ -1,7 +1,9 @@
 use na::{DefaultAllocator, RealField};
 
-use crate::aliases::TVec;
-use crate::traits::{Alloc, Dimension};
+use crate::{
+    aliases::TVec,
+    traits::{Alloc, Dimension},
+};
 
 /// The angle between two vectors.
 pub fn angle<N: RealField, D: Dimension>(x: &TVec<N, D>, y: &TVec<N, D>) -> N

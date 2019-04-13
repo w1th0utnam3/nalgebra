@@ -3,27 +3,25 @@ use serde::{Deserialize, Serialize};
 
 use alga::general::ComplexField;
 
-use crate::allocator::Allocator;
-use crate::base::{DefaultAllocator, Matrix, MatrixMN, MatrixN, SquareMatrix};
-use crate::constraint::{SameNumberOfRows, ShapeConstraint};
-use crate::dimension::{Dim, DimSub, Dynamic};
-use crate::storage::{Storage, StorageMut};
+use crate::{
+    allocator::Allocator,
+    base::{DefaultAllocator, Matrix, MatrixMN, MatrixN, SquareMatrix},
+    constraint::{SameNumberOfRows, ShapeConstraint},
+    dimension::{Dim, DimSub, Dynamic},
+    storage::{Storage, StorageMut},
+};
 
 /// The Cholesky decomposition of a symmetric-definite-positive matrix.
 #[cfg_attr(feature = "serde-serialize", derive(Serialize, Deserialize))]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        serialize = "DefaultAllocator: Allocator<N, D>,
-         MatrixN<N, D>: Serialize"
-    ))
+    serde(bound(serialize = "DefaultAllocator: Allocator<N, D>,
+         MatrixN<N, D>: Serialize"))
 )]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        deserialize = "DefaultAllocator: Allocator<N, D>,
-         MatrixN<N, D>: Deserialize<'de>"
-    ))
+    serde(bound(deserialize = "DefaultAllocator: Allocator<N, D>,
+         MatrixN<N, D>: Deserialize<'de>"))
 )]
 #[derive(Clone, Debug)]
 pub struct Cholesky<N: ComplexField, D: Dim>
@@ -36,7 +34,8 @@ impl<N: ComplexField, D: Dim> Copy for Cholesky<N, D>
 where
     DefaultAllocator: Allocator<N, D, D>,
     MatrixN<N, D>: Copy,
-{}
+{
+}
 
 impl<N: ComplexField, D: DimSub<Dynamic>> Cholesky<N, D>
 where DefaultAllocator: Allocator<N, D, D>

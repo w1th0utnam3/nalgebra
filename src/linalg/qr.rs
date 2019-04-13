@@ -1,36 +1,33 @@
+use num::Zero;
 #[cfg(feature = "serde-serialize")]
 use serde::{Deserialize, Serialize};
-use num::Zero;
 
+use crate::{
+    allocator::{Allocator, Reallocator},
+    base::{DefaultAllocator, Matrix, MatrixMN, MatrixN, Unit, VectorN},
+    constraint::{SameNumberOfRows, ShapeConstraint},
+    dimension::{Dim, DimMin, DimMinimum, U1},
+    storage::{Storage, StorageMut},
+};
 use alga::general::ComplexField;
-use crate::allocator::{Allocator, Reallocator};
-use crate::base::{DefaultAllocator, Matrix, MatrixMN, MatrixN, Unit, VectorN};
-use crate::constraint::{SameNumberOfRows, ShapeConstraint};
-use crate::dimension::{Dim, DimMin, DimMinimum, U1};
-use crate::storage::{Storage, StorageMut};
 
-use crate::geometry::Reflection;
-use crate::linalg::householder;
+use crate::{geometry::Reflection, linalg::householder};
 
 /// The QR decomposition of a general matrix.
 #[cfg_attr(feature = "serde-serialize", derive(Serialize, Deserialize))]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        serialize = "DefaultAllocator: Allocator<N, R, C> +
+    serde(bound(serialize = "DefaultAllocator: Allocator<N, R, C> +
                            Allocator<N, DimMinimum<R, C>>,
          MatrixMN<N, R, C>: Serialize,
-         VectorN<N, DimMinimum<R, C>>: Serialize"
-    ))
+         VectorN<N, DimMinimum<R, C>>: Serialize"))
 )]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        deserialize = "DefaultAllocator: Allocator<N, R, C> +
+    serde(bound(deserialize = "DefaultAllocator: Allocator<N, R, C> +
                            Allocator<N, DimMinimum<R, C>>,
          MatrixMN<N, R, C>: Deserialize<'de>,
-         VectorN<N, DimMinimum<R, C>>: Deserialize<'de>"
-    ))
+         VectorN<N, DimMinimum<R, C>>: Deserialize<'de>"))
 )]
 #[derive(Clone, Debug)]
 pub struct QR<N: ComplexField, R: DimMin<C>, C: Dim>
@@ -45,7 +42,8 @@ where
     DefaultAllocator: Allocator<N, R, C> + Allocator<N, DimMinimum<R, C>>,
     MatrixMN<N, R, C>: Copy,
     VectorN<N, DimMinimum<R, C>>: Copy,
-{}
+{
+}
 
 impl<N: ComplexField, R: DimMin<C>, C: Dim> QR<N, R, C>
 where DefaultAllocator: Allocator<N, R, C> + Allocator<N, R> + Allocator<N, DimMinimum<R, C>>
@@ -77,9 +75,7 @@ where DefaultAllocator: Allocator<N, R, C> + Allocator<N, R> + Allocator<N, DimM
     /// Retrieves the upper trapezoidal submatrix `R` of this decomposition.
     #[inline]
     pub fn r(&self) -> MatrixMN<N, DimMinimum<R, C>, C>
-    where
-        DefaultAllocator: Allocator<N, DimMinimum<R, C>, C>,
-    {
+    where DefaultAllocator: Allocator<N, DimMinimum<R, C>, C> {
         let (nrows, ncols) = self.qr.data.shape();
         let mut res = self.qr.rows_generic(0, nrows.min(ncols)).upper_triangle();
         res.set_partial_diagonal(self.diag.iter().map(|e| N::from_real(e.modulus())));
@@ -91,9 +87,7 @@ where DefaultAllocator: Allocator<N, R, C> + Allocator<N, R> + Allocator<N, DimM
     /// This is usually faster than `r` but consumes `self`.
     #[inline]
     pub fn unpack_r(self) -> MatrixMN<N, DimMinimum<R, C>, C>
-    where
-        DefaultAllocator: Reallocator<N, R, C, DimMinimum<R, C>, C>,
-    {
+    where DefaultAllocator: Reallocator<N, R, C, DimMinimum<R, C>, C> {
         let (nrows, ncols) = self.qr.data.shape();
         let mut res = self.qr.resize_generic(nrows.min(ncols), ncols, N::zero());
         res.fill_lower_triangle(N::zero(), 1);

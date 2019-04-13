@@ -1,7 +1,9 @@
 use na::{DefaultAllocator, RealField, Scalar};
 
-use crate::aliases::{TMat, TVec};
-use crate::traits::{Alloc, Dimension, Number};
+use crate::{
+    aliases::{TMat, TVec},
+    traits::{Alloc, Dimension, Number},
+};
 
 /// The determinant of the matrix `m`.
 pub fn determinant<N: RealField, D: Dimension>(m: &TMat<N, D, D>) -> N

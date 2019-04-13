@@ -2,10 +2,12 @@
 
 use std::any::Any;
 
-use crate::base::constraint::{SameNumberOfColumns, SameNumberOfRows, ShapeConstraint};
-use crate::base::dimension::{Dim, U1};
-use crate::base::storage::ContiguousStorageMut;
-use crate::base::{DefaultAllocator, Scalar};
+use crate::base::{
+    constraint::{SameNumberOfColumns, SameNumberOfRows, ShapeConstraint},
+    dimension::{Dim, U1},
+    storage::ContiguousStorageMut,
+    DefaultAllocator, Scalar,
+};
 
 /// A matrix allocator of a memory buffer that may contain `R::to_usize() * C::to_usize()`
 /// elements of type `N`.
@@ -79,7 +81,8 @@ where
     N: Scalar,
     DefaultAllocator: Allocator<N, R1, C1> + Allocator<N, SameShapeR<R1, R2>, SameShapeC<C1, C2>>,
     ShapeConstraint: SameNumberOfRows<R1, R2> + SameNumberOfColumns<C1, C2>,
-{}
+{
+}
 
 // XXX: Bad name.
 /// Restricts the given number of rows to be equal.
@@ -100,4 +103,5 @@ where
     N: Scalar,
     DefaultAllocator: Allocator<N, R1, U1> + Allocator<N, SameShapeR<R1, R2>>,
     ShapeConstraint: SameNumberOfRows<R1, R2>,
-{}
+{
+}

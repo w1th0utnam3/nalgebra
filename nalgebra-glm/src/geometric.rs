@@ -1,7 +1,9 @@
 use na::{DefaultAllocator, RealField};
 
-use crate::aliases::{TVec, TVec3};
-use crate::traits::{Alloc, Dimension, Number};
+use crate::{
+    aliases::{TVec, TVec3},
+    traits::{Alloc, Dimension, Number},
+};
 
 /// The cross product of two vectors.
 pub fn cross<N: Number, D: Dimension>(x: &TVec3<N>, y: &TVec3<N>) -> TVec3<N> {
@@ -82,8 +84,14 @@ where DefaultAllocator: Alloc<N, D> {
 }
 
 /// For the incident vector `i` and surface normal `n`, and the ratio of indices of refraction `eta`, return the refraction vector.
-pub fn refract_vec<N: RealField, D: Dimension>(i: &TVec<N, D>, n: &TVec<N, D>, eta: N) -> TVec<N, D>
-where DefaultAllocator: Alloc<N, D> {
+pub fn refract_vec<N: RealField, D: Dimension>(
+    i: &TVec<N, D>,
+    n: &TVec<N, D>,
+    eta: N,
+) -> TVec<N, D>
+where
+    DefaultAllocator: Alloc<N, D>,
+{
     let ni = n.dot(i);
     let k = N::one() - eta * eta * (N::one() - ni * ni);
 

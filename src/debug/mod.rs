@@ -3,5 +3,4 @@
 mod random_orthogonal;
 mod random_sdp;
 
-pub use self::random_orthogonal::*;
-pub use self::random_sdp::*;
+pub use self::{random_orthogonal::*, random_sdp::*};

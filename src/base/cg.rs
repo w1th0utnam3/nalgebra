@@ -7,19 +7,23 @@
 
 use num::One;
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, DimNameDiff, DimNameSub, U1};
-use crate::base::storage::{Storage, StorageMut};
-use crate::base::{
-    DefaultAllocator, Matrix3, Matrix4, MatrixN, Scalar, SquareMatrix, Unit, Vector, Vector3,
-    VectorN,
-};
-use crate::geometry::{
-    Isometry, IsometryMatrix3, Orthographic3, Perspective3, Point, Point3, Rotation2, Rotation3,
+use crate::{
+    base::{
+        allocator::Allocator,
+        dimension::{DimName, DimNameDiff, DimNameSub, U1},
+        storage::{Storage, StorageMut},
+        DefaultAllocator, Matrix3, Matrix4, MatrixN, Scalar, SquareMatrix, Unit, Vector, Vector3,
+        VectorN,
+    },
+    geometry::{
+        Isometry, IsometryMatrix3, Orthographic3, Perspective3, Point, Point3, Rotation2, Rotation3,
+    },
 };
 
-use alga::general::{RealField, Ring};
-use alga::linear::Transformation;
+use alga::{
+    general::{RealField, Ring},
+    linear::Transformation,
+};
 
 impl<N, D: DimName> MatrixN<N, D>
 where
@@ -135,7 +139,7 @@ impl<N: RealField> Matrix4<N> {
     }
 
     /// Deprecated: Use [Matrix4::face_towards] instead.
-    #[deprecated(note="renamed to `face_towards`")]
+    #[deprecated(note = "renamed to `face_towards`")]
     pub fn new_observer_frame(eye: &Point3<N>, target: &Point3<N>, up: &Vector3<N>) -> Self {
         Matrix4::face_towards(eye, target, up)
     }

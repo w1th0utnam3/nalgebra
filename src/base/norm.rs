@@ -1,11 +1,12 @@
 use num::Zero;
 
-use crate::allocator::Allocator;
-use crate::{RealField, ComplexField};
-use crate::storage::{Storage, StorageMut};
-use crate::base::{DefaultAllocator, Matrix, Dim, MatrixMN};
-use crate::constraint::{SameNumberOfRows, SameNumberOfColumns, ShapeConstraint};
-
+use crate::{
+    allocator::Allocator,
+    base::{DefaultAllocator, Dim, Matrix, MatrixMN},
+    constraint::{SameNumberOfColumns, SameNumberOfRows, ShapeConstraint},
+    storage::{Storage, StorageMut},
+    ComplexField, RealField,
+};
 
 // FIXME: this should be be a trait on alga?
 /// A trait for abstract matrix norms.
@@ -14,12 +15,24 @@ use crate::constraint::{SameNumberOfRows, SameNumberOfColumns, ShapeConstraint};
 pub trait Norm<N: ComplexField> {
     /// Apply this norm to the given matrix.
     fn norm<R, C, S>(&self, m: &Matrix<N, R, C, S>) -> N::RealField
-        where R: Dim, C: Dim, S: Storage<N, R, C>;
+    where
+        R: Dim,
+        C: Dim,
+        S: Storage<N, R, C>;
     /// Use the metric induced by this norm to compute the metric distance between the two given matrices.
-    fn metric_distance<R1, C1, S1, R2, C2, S2>(&self, m1: &Matrix<N, R1, C1, S1>, m2: &Matrix<N, R2, C2, S2>) -> N::RealField
-        where R1: Dim, C1: Dim, S1: Storage<N, R1, C1>,
-              R2: Dim, C2: Dim, S2: Storage<N, R2, C2>,
-              ShapeConstraint: SameNumberOfRows<R1, R2> + SameNumberOfColumns<C1, C2>;
+    fn metric_distance<R1, C1, S1, R2, C2, S2>(
+        &self,
+        m1: &Matrix<N, R1, C1, S1>,
+        m2: &Matrix<N, R2, C2, S2>,
+    ) -> N::RealField
+    where
+        R1: Dim,
+        C1: Dim,
+        S1: Storage<N, R1, C1>,
+        R2: Dim,
+        C2: Dim,
+        S2: Storage<N, R2, C2>,
+        ShapeConstraint: SameNumberOfRows<R1, R2> + SameNumberOfColumns<C1, C2>;
 }
 
 /// Euclidean norm.
@@ -32,57 +45,100 @@ pub struct UniformNorm;
 impl<N: ComplexField> Norm<N> for EuclideanNorm {
     #[inline]
     fn norm<R, C, S>(&self, m: &Matrix<N, R, C, S>) -> N::RealField
-        where R: Dim, C: Dim, S: Storage<N, R, C> {
+    where
+        R: Dim,
+        C: Dim,
+        S: Storage<N, R, C>,
+    {
         m.norm_squared().sqrt()
     }
 
     #[inline]
-    fn metric_distance<R1, C1, S1, R2, C2, S2>(&self, m1: &Matrix<N, R1, C1, S1>, m2: &Matrix<N, R2, C2, S2>) -> N::RealField
-        where R1: Dim, C1: Dim, S1: Storage<N, R1, C1>,
-              R2: Dim, C2: Dim, S2: Storage<N, R2, C2>,
-              ShapeConstraint: SameNumberOfRows<R1, R2> + SameNumberOfColumns<C1, C2> {
+    fn metric_distance<R1, C1, S1, R2, C2, S2>(
+        &self,
+        m1: &Matrix<N, R1, C1, S1>,
+        m2: &Matrix<N, R2, C2, S2>,
+    ) -> N::RealField
+    where
+        R1: Dim,
+        C1: Dim,
+        S1: Storage<N, R1, C1>,
+        R2: Dim,
+        C2: Dim,
+        S2: Storage<N, R2, C2>,
+        ShapeConstraint: SameNumberOfRows<R1, R2> + SameNumberOfColumns<C1, C2>,
+    {
         m1.zip_fold(m2, N::RealField::zero(), |acc, a, b| {
             let diff = a - b;
             acc + diff.modulus_squared()
-        }).sqrt()
+        })
+        .sqrt()
     }
 }
 
 impl<N: ComplexField> Norm<N> for LpNorm {
     #[inline]
     fn norm<R, C, S>(&self, m: &Matrix<N, R, C, S>) -> N::RealField
-        where R: Dim, C: Dim, S: Storage<N, R, C> {
-        m.fold(N::RealField::zero(), |a, b| {
-            a + b.modulus().powi(self.0)
-        }).powf(crate::convert(1.0 / (self.0 as f64)))
+    where
+        R: Dim,
+        C: Dim,
+        S: Storage<N, R, C>,
+    {
+        m.fold(N::RealField::zero(), |a, b| a + b.modulus().powi(self.0))
+            .powf(crate::convert(1.0 / (self.0 as f64)))
     }
 
     #[inline]
-    fn metric_distance<R1, C1, S1, R2, C2, S2>(&self, m1: &Matrix<N, R1, C1, S1>, m2: &Matrix<N, R2, C2, S2>) -> N::RealField
-        where R1: Dim, C1: Dim, S1: Storage<N, R1, C1>,
-              R2: Dim, C2: Dim, S2: Storage<N, R2, C2>,
-              ShapeConstraint: SameNumberOfRows<R1, R2> + SameNumberOfColumns<C1, C2> {
+    fn metric_distance<R1, C1, S1, R2, C2, S2>(
+        &self,
+        m1: &Matrix<N, R1, C1, S1>,
+        m2: &Matrix<N, R2, C2, S2>,
+    ) -> N::RealField
+    where
+        R1: Dim,
+        C1: Dim,
+        S1: Storage<N, R1, C1>,
+        R2: Dim,
+        C2: Dim,
+        S2: Storage<N, R2, C2>,
+        ShapeConstraint: SameNumberOfRows<R1, R2> + SameNumberOfColumns<C1, C2>,
+    {
         m1.zip_fold(m2, N::RealField::zero(), |acc, a, b| {
             let diff = a - b;
             acc + diff.modulus().powi(self.0)
-        }).powf(crate::convert(1.0 / (self.0 as f64)))
+        })
+        .powf(crate::convert(1.0 / (self.0 as f64)))
     }
 }
 
 impl<N: ComplexField> Norm<N> for UniformNorm {
     #[inline]
     fn norm<R, C, S>(&self, m: &Matrix<N, R, C, S>) -> N::RealField
-        where R: Dim, C: Dim, S: Storage<N, R, C> {
+    where
+        R: Dim,
+        C: Dim,
+        S: Storage<N, R, C>,
+    {
         // NOTE: we don't use `m.amax()` here because for the complex
         // numbers this will return the max norm1 instead of the modulus.
         m.fold(N::RealField::zero(), |acc, a| acc.max(a.modulus()))
     }
 
     #[inline]
-    fn metric_distance<R1, C1, S1, R2, C2, S2>(&self, m1: &Matrix<N, R1, C1, S1>, m2: &Matrix<N, R2, C2, S2>) -> N::RealField
-        where R1: Dim, C1: Dim, S1: Storage<N, R1, C1>,
-              R2: Dim, C2: Dim, S2: Storage<N, R2, C2>,
-              ShapeConstraint: SameNumberOfRows<R1, R2> + SameNumberOfColumns<C1, C2> {
+    fn metric_distance<R1, C1, S1, R2, C2, S2>(
+        &self,
+        m1: &Matrix<N, R1, C1, S1>,
+        m2: &Matrix<N, R2, C2, S2>,
+    ) -> N::RealField
+    where
+        R1: Dim,
+        C1: Dim,
+        S1: Storage<N, R1, C1>,
+        R2: Dim,
+        C2: Dim,
+        S2: Storage<N, R2, C2>,
+        ShapeConstraint: SameNumberOfRows<R1, R2> + SameNumberOfColumns<C1, C2>,
+    {
         m1.zip_fold(m2, N::RealField::zero(), |acc, a, b| {
             let val = (a - b).modulus();
             if val > acc {
@@ -93,7 +149,6 @@ impl<N: ComplexField> Norm<N> for UniformNorm {
         })
     }
 }
-
 
 impl<N: ComplexField, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S> {
     /// The squared L2 norm of this vector.
@@ -122,8 +177,12 @@ impl<N: ComplexField, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S> {
     /// Use `.apply_metric_distance` to apply a custom norm.
     #[inline]
     pub fn metric_distance<R2, C2, S2>(&self, rhs: &Matrix<N, R2, C2, S2>) -> N::RealField
-        where R2: Dim, C2: Dim, S2: Storage<N, R2, C2>,
-              ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2> {
+    where
+        R2: Dim,
+        C2: Dim,
+        S2: Storage<N, R2, C2>,
+        ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2>,
+    {
         self.apply_metric_distance(rhs, &EuclideanNorm)
     }
 
@@ -159,9 +218,17 @@ impl<N: ComplexField, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S> {
     /// assert_eq!(v1.apply_metric_distance(&v2, &EuclideanNorm), (v1 - v2).norm());
     /// ```
     #[inline]
-    pub fn apply_metric_distance<R2, C2, S2>(&self, rhs: &Matrix<N, R2, C2, S2>, norm: &impl Norm<N>) -> N::RealField
-        where R2: Dim, C2: Dim, S2: Storage<N, R2, C2>,
-              ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2> {
+    pub fn apply_metric_distance<R2, C2, S2>(
+        &self,
+        rhs: &Matrix<N, R2, C2, S2>,
+        norm: &impl Norm<N>,
+    ) -> N::RealField
+    where
+        R2: Dim,
+        C2: Dim,
+        S2: Storage<N, R2, C2>,
+        ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2>,
+    {
         norm.metric_distance(self, rhs)
     }
 
@@ -188,14 +255,14 @@ impl<N: ComplexField, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S> {
     /// Returns a normalized version of this matrix.
     #[inline]
     pub fn normalize(&self) -> MatrixMN<N, R, C>
-        where DefaultAllocator: Allocator<N, R, C> {
+    where DefaultAllocator: Allocator<N, R, C> {
         self.unscale(self.norm())
     }
 
     /// Returns a normalized version of this matrix unless its norm as smaller or equal to `eps`.
     #[inline]
     pub fn try_normalize(&self, min_norm: N::RealField) -> Option<MatrixMN<N, R, C>>
-        where DefaultAllocator: Allocator<N, R, C> {
+    where DefaultAllocator: Allocator<N, R, C> {
         let n = self.norm();
 
         if n <= min_norm {
@@ -211,7 +278,6 @@ impl<N: ComplexField, R: Dim, C: Dim, S: Storage<N, R, C>> Matrix<N, R, C, S> {
         self.apply_norm(&LpNorm(p))
     }
 }
-
 
 impl<N: ComplexField, R: Dim, C: Dim, S: StorageMut<N, R, C>> Matrix<N, R, C, S> {
     /// Normalizes this matrix in-place and returns its norm.

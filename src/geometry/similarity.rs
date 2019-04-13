@@ -1,8 +1,7 @@
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
-use std::fmt;
-use std::hash;
 #[cfg(feature = "abomonation-serialize")]
 use std::io::{Result as IOResult, Write};
+use std::{fmt, hash};
 
 #[cfg(feature = "serde-serialize")]
 use serde::{Deserialize, Serialize};
@@ -10,14 +9,20 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "abomonation-serialize")]
 use abomonation::Abomonation;
 
-use alga::general::{RealField, SubsetOf};
-use alga::linear::Rotation;
+use alga::{
+    general::{RealField, SubsetOf},
+    linear::Rotation,
+};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, DimNameAdd, DimNameSum, U1};
-use crate::base::storage::Owned;
-use crate::base::{DefaultAllocator, MatrixN, VectorN};
-use crate::geometry::{Isometry, Point, Translation};
+use crate::{
+    base::{
+        allocator::Allocator,
+        dimension::{DimName, DimNameAdd, DimNameSum, U1},
+        storage::Owned,
+        DefaultAllocator, MatrixN, VectorN,
+    },
+    geometry::{Isometry, Point, Translation},
+};
 
 /// A similarity, i.e., an uniform scaling, followed by a rotation, followed by a translation.
 #[repr(C)]
@@ -25,21 +30,17 @@ use crate::geometry::{Isometry, Point, Translation};
 #[cfg_attr(feature = "serde-serialize", derive(Serialize, Deserialize))]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        serialize = "N: Serialize,
+    serde(bound(serialize = "N: Serialize,
                      R: Serialize,
                      DefaultAllocator: Allocator<N, D>,
-                     Owned<N, D>: Serialize"
-    ))
+                     Owned<N, D>: Serialize"))
 )]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        deserialize = "N: Deserialize<'de>,
+    serde(bound(deserialize = "N: Deserialize<'de>,
                        R: Deserialize<'de>,
                        DefaultAllocator: Allocator<N, D>,
-                       Owned<N, D>: Deserialize<'de>"
-    ))
+                       Owned<N, D>: Deserialize<'de>"))
 )]
 pub struct Similarity<N: RealField, D: DimName, R>
 where DefaultAllocator: Allocator<N, D>
@@ -84,7 +85,8 @@ impl<N: RealField, D: DimName + Copy, R: Rotation<Point<N, D>> + Copy> Copy for 
 where
     DefaultAllocator: Allocator<N, D>,
     Owned<N, D>: Copy,
-{}
+{
+}
 
 impl<N: RealField, D: DimName, R: Rotation<Point<N, D>> + Clone> Clone for Similarity<N, D, R>
 where DefaultAllocator: Allocator<N, D>
@@ -102,12 +104,7 @@ where
 {
     /// Creates a new similarity from its rotational and translational parts.
     #[inline]
-    pub fn from_parts(
-        translation: Translation<N, D>,
-        rotation: R,
-        scaling: N,
-    ) -> Self
-    {
+    pub fn from_parts(translation: Translation<N, D>, rotation: R, scaling: N) -> Self {
         Self::from_isometry(Isometry::from_parts(translation, rotation), scaling)
     }
 
@@ -350,7 +347,8 @@ impl<N: RealField, D: DimName, R> Eq for Similarity<N, D, R>
 where
     R: Rotation<Point<N, D>> + Eq,
     DefaultAllocator: Allocator<N, D>,
-{}
+{
+}
 
 impl<N: RealField, D: DimName, R> PartialEq for Similarity<N, D, R>
 where

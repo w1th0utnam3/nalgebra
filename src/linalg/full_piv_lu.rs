@@ -1,35 +1,32 @@
 #[cfg(feature = "serde-serialize")]
 use serde::{Deserialize, Serialize};
 
+use crate::{
+    allocator::Allocator,
+    base::{DefaultAllocator, Matrix, MatrixMN, MatrixN},
+    constraint::{SameNumberOfRows, ShapeConstraint},
+    dimension::{Dim, DimMin, DimMinimum},
+    storage::{Storage, StorageMut},
+};
 use alga::general::ComplexField;
-use crate::allocator::Allocator;
-use crate::base::{DefaultAllocator, Matrix, MatrixMN, MatrixN};
-use crate::constraint::{SameNumberOfRows, ShapeConstraint};
-use crate::dimension::{Dim, DimMin, DimMinimum};
-use crate::storage::{Storage, StorageMut};
 
-use crate::linalg::lu;
-use crate::linalg::PermutationSequence;
+use crate::linalg::{lu, PermutationSequence};
 
 /// LU decomposition with full row and column pivoting.
 #[cfg_attr(feature = "serde-serialize", derive(Serialize, Deserialize))]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        serialize = "DefaultAllocator: Allocator<N, R, C> +
+    serde(bound(serialize = "DefaultAllocator: Allocator<N, R, C> +
                            Allocator<(usize, usize), DimMinimum<R, C>>,
          MatrixMN<N, R, C>: Serialize,
-         PermutationSequence<DimMinimum<R, C>>: Serialize"
-    ))
+         PermutationSequence<DimMinimum<R, C>>: Serialize"))
 )]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        deserialize = "DefaultAllocator: Allocator<N, R, C> +
+    serde(bound(deserialize = "DefaultAllocator: Allocator<N, R, C> +
                            Allocator<(usize, usize), DimMinimum<R, C>>,
          MatrixMN<N, R, C>: Deserialize<'de>,
-         PermutationSequence<DimMinimum<R, C>>: Deserialize<'de>"
-    ))
+         PermutationSequence<DimMinimum<R, C>>: Deserialize<'de>"))
 )]
 #[derive(Clone, Debug)]
 pub struct FullPivLU<N: ComplexField, R: DimMin<C>, C: Dim>
@@ -45,7 +42,8 @@ where
     DefaultAllocator: Allocator<N, R, C> + Allocator<(usize, usize), DimMinimum<R, C>>,
     MatrixMN<N, R, C>: Copy,
     PermutationSequence<DimMinimum<R, C>>: Copy,
-{}
+{
+}
 
 impl<N: ComplexField, R: DimMin<C>, C: Dim> FullPivLU<N, R, C>
 where DefaultAllocator: Allocator<N, R, C> + Allocator<(usize, usize), DimMinimum<R, C>>

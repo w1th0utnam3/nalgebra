@@ -1,40 +1,37 @@
 #[cfg(feature = "serde-serialize")]
 use serde::{Deserialize, Serialize};
 
+use crate::{
+    allocator::Allocator,
+    base::{DefaultAllocator, Matrix, MatrixMN, MatrixN, Unit, VectorN},
+    dimension::{Dim, DimDiff, DimMin, DimMinimum, DimSub, U1},
+    storage::Storage,
+};
 use alga::general::ComplexField;
-use crate::allocator::Allocator;
-use crate::base::{DefaultAllocator, Matrix, MatrixMN, MatrixN, Unit, VectorN};
-use crate::dimension::{Dim, DimDiff, DimMin, DimMinimum, DimSub, U1};
-use crate::storage::Storage;
 
-use crate::geometry::Reflection;
-use crate::linalg::householder;
+use crate::{geometry::Reflection, linalg::householder};
 
 /// The bidiagonalization of a general matrix.
 #[cfg_attr(feature = "serde-serialize", derive(Serialize, Deserialize))]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        serialize = "DimMinimum<R, C>: DimSub<U1>,
+    serde(bound(serialize = "DimMinimum<R, C>: DimSub<U1>,
          DefaultAllocator: Allocator<N, R, C>             +
                            Allocator<N, DimMinimum<R, C>> +
                            Allocator<N, DimDiff<DimMinimum<R, C>, U1>>,
          MatrixMN<N, R, C>: Serialize,
          VectorN<N, DimMinimum<R, C>>: Serialize,
-         VectorN<N, DimDiff<DimMinimum<R, C>, U1>>: Serialize"
-    ))
+         VectorN<N, DimDiff<DimMinimum<R, C>, U1>>: Serialize"))
 )]
 #[cfg_attr(
     feature = "serde-serialize",
-    serde(bound(
-        deserialize = "DimMinimum<R, C>: DimSub<U1>,
+    serde(bound(deserialize = "DimMinimum<R, C>: DimSub<U1>,
          DefaultAllocator: Allocator<N, R, C>             +
                            Allocator<N, DimMinimum<R, C>> +
                            Allocator<N, DimDiff<DimMinimum<R, C>, U1>>,
          MatrixMN<N, R, C>: Deserialize<'de>,
          VectorN<N, DimMinimum<R, C>>: Deserialize<'de>,
-         VectorN<N, DimDiff<DimMinimum<R, C>, U1>>: Deserialize<'de>"
-    ))
+         VectorN<N, DimDiff<DimMinimum<R, C>, U1>>: Deserialize<'de>"))
 )]
 #[derive(Clone, Debug)]
 pub struct Bidiagonal<N: ComplexField, R: DimMin<C>, C: Dim>
@@ -63,7 +60,8 @@ where
     MatrixMN<N, R, C>: Copy,
     VectorN<N, DimMinimum<R, C>>: Copy,
     VectorN<N, DimDiff<DimMinimum<R, C>, U1>>: Copy,
-{}
+{
+}
 
 impl<N: ComplexField, R: DimMin<C>, C: Dim> Bidiagonal<N, R, C>
 where
@@ -174,11 +172,9 @@ where
         MatrixN<N, DimMinimum<R, C>>,
         MatrixMN<N, DimMinimum<R, C>, C>,
     )
-    where
-        DefaultAllocator: Allocator<N, DimMinimum<R, C>, DimMinimum<R, C>>
+    where DefaultAllocator: Allocator<N, DimMinimum<R, C>, DimMinimum<R, C>>
             + Allocator<N, R, DimMinimum<R, C>>
-            + Allocator<N, DimMinimum<R, C>, C>,
-    {
+            + Allocator<N, DimMinimum<R, C>, C> {
         // FIXME: optimize by calling a reallocator.
         (self.u(), self.d(), self.v_t())
     }
@@ -186,9 +182,7 @@ where
     /// Retrieves the upper trapezoidal submatrix `R` of this decomposition.
     #[inline]
     pub fn d(&self) -> MatrixN<N, DimMinimum<R, C>>
-    where
-        DefaultAllocator: Allocator<N, DimMinimum<R, C>, DimMinimum<R, C>>,
-    {
+    where DefaultAllocator: Allocator<N, DimMinimum<R, C>, DimMinimum<R, C>> {
         let (nrows, ncols) = self.uv.data.shape();
 
         let d = nrows.min(ncols);
@@ -266,13 +260,13 @@ where
 
     /// The diagonal part of this decomposed matrix.
     pub fn diagonal(&self) -> VectorN<N::RealField, DimMinimum<R, C>>
-        where DefaultAllocator: Allocator<N::RealField, DimMinimum<R, C>> {
+    where DefaultAllocator: Allocator<N::RealField, DimMinimum<R, C>> {
         self.diagonal.map(|e| e.modulus())
     }
 
     /// The off-diagonal part of this decomposed matrix.
     pub fn off_diagonal(&self) -> VectorN<N::RealField, DimDiff<DimMinimum<R, C>, U1>>
-        where DefaultAllocator: Allocator<N::RealField, DimDiff<DimMinimum<R, C>, U1>> {
+    where DefaultAllocator: Allocator<N::RealField, DimDiff<DimMinimum<R, C>, U1>> {
         self.off_diagonal.map(|e| e.modulus())
     }
 

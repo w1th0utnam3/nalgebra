@@ -1,11 +1,13 @@
 //! Construction of householder elementary reflections.
 
-use num::Zero;
+use crate::{
+    allocator::Allocator,
+    base::{DefaultAllocator, MatrixMN, MatrixN, Unit, Vector, VectorN},
+    dimension::Dim,
+    storage::{Storage, StorageMut},
+};
 use alga::general::ComplexField;
-use crate::allocator::Allocator;
-use crate::base::{DefaultAllocator, MatrixMN, MatrixN, Unit, Vector, VectorN};
-use crate::dimension::Dim;
-use crate::storage::{Storage, StorageMut};
+use num::Zero;
 
 use crate::geometry::Reflection;
 

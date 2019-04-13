@@ -119,7 +119,10 @@ extern crate approx;
 extern crate alga;
 extern crate nalgebra as na;
 
-pub use crate::aliases::*;
+pub use crate::{
+    aliases::*,
+    traits::{Alloc, Dimension, Number},
+};
 pub use common::{
     abs, ceil, clamp, clamp_scalar, clamp_vec, float_bits_to_int, float_bits_to_int_vec,
     float_bits_to_uint, float_bits_to_uint_vec, floor, fract, int_bits_to_float,
@@ -133,7 +136,6 @@ pub use geometric::{
     cross, distance, dot, faceforward, length, magnitude, normalize, reflect_vec, refract_vec,
 };
 pub use matrix::{determinant, inverse, matrix_comp_mult, outer_product, transpose};
-pub use crate::traits::{Alloc, Dimension, Number};
 pub use trigonometric::{
     acos, acosh, asin, asinh, atan, atan2, atanh, cos, cosh, degrees, radians, sin, sinh, tan, tanh,
 };
@@ -145,14 +147,14 @@ pub use ext::{
     epsilon, equal_columns, equal_columns_eps, equal_columns_eps_vec, equal_eps, equal_eps_vec,
     identity, look_at, look_at_lh, look_at_rh, max, max2, max3, max3_scalar, max4, max4_scalar,
     min, min2, min3, min3_scalar, min4, min4_scalar, not_equal_columns, not_equal_columns_eps,
-    not_equal_columns_eps_vec, not_equal_eps, not_equal_eps_vec, ortho, perspective, perspective_fov,
-    perspective_fov_lh,perspective_fov_lh_no, perspective_fov_lh_zo, perspective_fov_no,
-    perspective_fov_rh, perspective_fov_rh_no, perspective_fov_rh_zo, perspective_fov_zo,
-    perspective_lh, perspective_lh_no, perspective_lh_zo, perspective_no, perspective_rh,
-    perspective_rh_no, perspective_rh_zo, perspective_zo, ortho_lh, ortho_lh_no, ortho_lh_zo,
-    ortho_no, ortho_rh, ortho_rh_no, ortho_rh_zo, ortho_zo, pi, pick_matrix, project, project_no,
-    project_zo, quat_angle, quat_angle_axis, quat_axis, quat_conjugate, quat_cross, quat_dot,
-    quat_equal, quat_equal_eps, quat_exp, quat_inverse, quat_length, quat_lerp, quat_log,
+    not_equal_columns_eps_vec, not_equal_eps, not_equal_eps_vec, ortho, ortho_lh, ortho_lh_no,
+    ortho_lh_zo, ortho_no, ortho_rh, ortho_rh_no, ortho_rh_zo, ortho_zo, perspective,
+    perspective_fov, perspective_fov_lh, perspective_fov_lh_no, perspective_fov_lh_zo,
+    perspective_fov_no, perspective_fov_rh, perspective_fov_rh_no, perspective_fov_rh_zo,
+    perspective_fov_zo, perspective_lh, perspective_lh_no, perspective_lh_zo, perspective_no,
+    perspective_rh, perspective_rh_no, perspective_rh_zo, perspective_zo, pi, pick_matrix, project,
+    project_no, project_zo, quat_angle, quat_angle_axis, quat_axis, quat_conjugate, quat_cross,
+    quat_dot, quat_equal, quat_equal_eps, quat_exp, quat_inverse, quat_length, quat_lerp, quat_log,
     quat_magnitude, quat_normalize, quat_not_equal, quat_not_equal_eps, quat_pow, quat_rotate,
     quat_slerp, rotate, rotate_x, rotate_y, rotate_z, scale, translate, unproject, unproject_no,
     unproject_zo,
@@ -190,8 +192,8 @@ pub use gtx::{
 
 pub use na::{
     convert, convert_ref, convert_ref_unchecked, convert_unchecked, try_convert, try_convert_ref,
+    DefaultAllocator, RealField, Scalar, U1, U2, U3, U4,
 };
-pub use na::{DefaultAllocator, RealField, Scalar, U1, U2, U3, U4};
 
 mod aliases;
 mod common;

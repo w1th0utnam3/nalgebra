@@ -4,14 +4,18 @@ use crate::base::storage::Owned;
 use quickcheck::{Arbitrary, Gen};
 
 use num::{One, Zero};
-use rand::distributions::{Distribution, Standard};
-use rand::Rng;
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
 
 use alga::general::ClosedAdd;
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, U1, U2, U3, U4, U5, U6};
-use crate::base::{DefaultAllocator, Scalar, VectorN};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimName, U1, U2, U3, U4, U5, U6},
+    DefaultAllocator, Scalar, VectorN,
+};
 
 use crate::geometry::Translation;
 

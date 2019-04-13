@@ -1,8 +1,10 @@
 use alga::general::{RealField, SubsetOf};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, DimNameAdd, DimNameSum, U1};
-use crate::base::{DefaultAllocator, MatrixN};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimName, DimNameAdd, DimNameSum, U1},
+    DefaultAllocator, MatrixN,
+};
 
 use crate::geometry::{SuperTCategoryOf, TCategory, Transform};
 

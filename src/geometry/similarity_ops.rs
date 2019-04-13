@@ -1,11 +1,12 @@
 use std::ops::{Div, DivAssign, Mul, MulAssign};
 
-use alga::general::RealField;
-use alga::linear::Rotation as AlgaRotation;
+use alga::{general::RealField, linear::Rotation as AlgaRotation};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, U1, U3, U4};
-use crate::base::{DefaultAllocator, VectorN};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimName, U1, U3, U4},
+    DefaultAllocator, VectorN,
+};
 
 use crate::geometry::{Isometry, Point, Rotation, Similarity, Translation, UnitQuaternion};
 

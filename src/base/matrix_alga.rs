@@ -3,20 +3,22 @@ use alloc::vec::Vec;
 
 use num::{One, Zero};
 
-use alga::general::{
-    AbstractGroup, AbstractGroupAbelian, AbstractLoop, AbstractMagma, AbstractModule,
-    AbstractMonoid, AbstractQuasigroup, AbstractSemigroup, Additive, ClosedAdd, ClosedMul,
-    ClosedNeg, Field, Identity, TwoSidedInverse, JoinSemilattice, Lattice, MeetSemilattice, Module,
-    Multiplicative, RingCommutative, ComplexField
-};
-use alga::linear::{
-    FiniteDimInnerSpace, FiniteDimVectorSpace, InnerSpace, NormedSpace, VectorSpace,
+use alga::{
+    general::{
+        AbstractGroup, AbstractGroupAbelian, AbstractLoop, AbstractMagma, AbstractModule,
+        AbstractMonoid, AbstractQuasigroup, AbstractSemigroup, Additive, ClosedAdd, ClosedMul,
+        ClosedNeg, ComplexField, Field, Identity, JoinSemilattice, Lattice, MeetSemilattice,
+        Module, Multiplicative, RingCommutative, TwoSidedInverse,
+    },
+    linear::{FiniteDimInnerSpace, FiniteDimVectorSpace, InnerSpace, NormedSpace, VectorSpace},
 };
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{Dim, DimName};
-use crate::base::storage::{Storage, StorageMut};
-use crate::base::{DefaultAllocator, MatrixMN, MatrixN, Scalar};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{Dim, DimName},
+    storage::{Storage, StorageMut},
+    DefaultAllocator, MatrixMN, MatrixN, Scalar,
+};
 
 /*
  *

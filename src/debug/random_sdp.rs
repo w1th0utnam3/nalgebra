@@ -3,11 +3,12 @@ use crate::base::storage::Owned;
 #[cfg(feature = "arbitrary")]
 use quickcheck::{Arbitrary, Gen};
 
+use crate::base::{
+    allocator::Allocator,
+    dimension::{Dim, Dynamic},
+    DefaultAllocator, MatrixN, Scalar,
+};
 use alga::general::ComplexField;
-use crate::base::Scalar;
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{Dim, Dynamic};
-use crate::base::{DefaultAllocator, MatrixN};
 
 use crate::debug::RandomOrthogonal;
 

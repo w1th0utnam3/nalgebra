@@ -139,30 +139,32 @@ pub mod linalg;
 #[cfg(feature = "sparse")]
 pub mod sparse;
 
+#[cfg(feature = "sparse")]
+pub use crate::sparse::*;
+pub use crate::{base::*, geometry::*, linalg::*};
 #[cfg(feature = "std")]
 #[deprecated(
     note = "The 'core' module is being renamed to 'base' to avoid conflicts with the 'core' crate."
 )]
 pub use base as core;
-pub use crate::base::*;
-pub use crate::geometry::*;
-pub use crate::linalg::*;
-#[cfg(feature = "sparse")]
-pub use crate::sparse::*;
 
 use std::cmp::{self, Ordering, PartialOrd};
 
-use alga::general::{
-    Additive, AdditiveGroup, Identity, TwoSidedInverse, JoinSemilattice, Lattice, MeetSemilattice,
-    Multiplicative, SupersetOf,
+use alga::{
+    general::{
+        Additive, AdditiveGroup, Identity, JoinSemilattice, Lattice, MeetSemilattice,
+        Multiplicative, SupersetOf, TwoSidedInverse,
+    },
+    linear::{
+        EuclideanSpace, FiniteDimVectorSpace, InnerSpace, NormedSpace,
+        SquareMatrix as AlgaSquareMatrix,
+    },
 };
-use alga::linear::SquareMatrix as AlgaSquareMatrix;
-use alga::linear::{EuclideanSpace, FiniteDimVectorSpace, InnerSpace, NormedSpace};
 use num::Signed;
 
-pub use alga::general::{Id, RealField, ComplexField};
 #[allow(deprecated)]
 pub use alga::general::Real;
+pub use alga::general::{ComplexField, Id, RealField};
 pub use num_complex::Complex;
 
 /*

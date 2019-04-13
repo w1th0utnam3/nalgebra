@@ -1,12 +1,16 @@
-use alga::general::{
-    AbstractGroup, AbstractLoop, AbstractMagma, AbstractMonoid, AbstractQuasigroup,
-    AbstractSemigroup, Identity, TwoSidedInverse, Multiplicative, RealField,
+use alga::{
+    general::{
+        AbstractGroup, AbstractLoop, AbstractMagma, AbstractMonoid, AbstractQuasigroup,
+        AbstractSemigroup, Identity, Multiplicative, RealField, TwoSidedInverse,
+    },
+    linear::{ProjectiveTransformation, Transformation},
 };
-use alga::linear::{ProjectiveTransformation, Transformation};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimNameAdd, DimNameSum, U1};
-use crate::base::{DefaultAllocator, VectorN};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimNameAdd, DimNameSum, U1},
+    DefaultAllocator, VectorN,
+};
 
 use crate::geometry::{Point, SubTCategoryOf, TCategory, TProjective, Transform};
 

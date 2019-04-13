@@ -1,7 +1,9 @@
 use na::{DefaultAllocator, Point3, RealField, Rotation3, Unit};
 
-use crate::aliases::{TMat, TMat4, TVec, TVec3};
-use crate::traits::{Alloc, Dimension, Number};
+use crate::{
+    aliases::{TMat, TMat4, TVec, TVec3},
+    traits::{Alloc, Dimension, Number},
+};
 
 /// The identity matrix.
 pub fn identity<N: Number, D: Dimension>() -> TMat<N, D, D>

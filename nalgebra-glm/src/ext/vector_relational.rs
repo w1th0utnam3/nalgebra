@@ -1,7 +1,9 @@
 use na::DefaultAllocator;
 
-use crate::aliases::TVec;
-use crate::traits::{Alloc, Dimension, Number};
+use crate::{
+    aliases::TVec,
+    traits::{Alloc, Dimension, Number},
+};
 
 /// Component-wise approximate equality of two vectors, using a scalar epsilon.
 ///

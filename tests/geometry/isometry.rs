@@ -81,7 +81,7 @@ quickcheck!(
         r: Rotation2<f64>,
         t: Translation2<f64>,
         v: Vector2<f64>,
-        p: Point2<f64>
+        p: Point2<f64>,
     ) -> bool
     {
         // (rotation × translation) * point = rotation × (translation * point)
@@ -119,7 +119,7 @@ quickcheck!(
         r: Rotation3<f64>,
         t: Translation3<f64>,
         v: Vector3<f64>,
-        p: Point3<f64>
+        p: Point3<f64>,
     ) -> bool
     {
         // (rotation × translation) * point = rotation × (translation * point)
@@ -157,7 +157,7 @@ quickcheck!(
         t: Translation3<f64>,
         v: Vector3<f64>,
         p: Point3<f64>,
-        r: Rotation3<f64>
+        r: Rotation3<f64>,
     ) -> bool
     {
         let iMi = i * i;

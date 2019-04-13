@@ -9,7 +9,7 @@ use na::{
     Vector1, Vector2, Vector3, Vector4, Vector5, Vector6,
 };
 
-quickcheck!{
+quickcheck! {
     fn translation_conversion(t: Translation3<f64>, v: Vector3<f64>, p: Point3<f64>) -> bool {
         let iso: Isometry3<f64>   = na::convert(t);
         let sim: Similarity3<f64> = na::convert(t);

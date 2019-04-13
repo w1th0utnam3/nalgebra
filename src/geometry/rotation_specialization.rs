@@ -5,13 +5,17 @@ use quickcheck::{Arbitrary, Gen};
 
 use alga::general::RealField;
 use num::Zero;
-use rand::distributions::{Distribution, OpenClosed01, Standard};
-use rand::Rng;
+use rand::{
+    distributions::{Distribution, OpenClosed01, Standard},
+    Rng,
+};
 use std::ops::Neg;
 
-use crate::base::dimension::{U1, U2, U3};
-use crate::base::storage::Storage;
-use crate::base::{Matrix2, Matrix3, MatrixN, Unit, Vector, Vector1, Vector3, VectorN};
+use crate::base::{
+    dimension::{U1, U2, U3},
+    storage::Storage,
+    Matrix2, Matrix3, MatrixN, Unit, Vector, Vector1, Vector3, VectorN,
+};
 
 use crate::geometry::{Rotation2, Rotation3, UnitComplex, UnitQuaternion};
 
@@ -77,10 +81,8 @@ impl<N: RealField> Rotation2<N> {
         let mut rot = guess.into_inner();
 
         for _ in 0..max_iter {
-            let axis = rot.column(0).perp(&m.column(0)) +
-                rot.column(1).perp(&m.column(1));
-            let denom = rot.column(0).dot(&m.column(0)) +
-                rot.column(1).dot(&m.column(1));
+            let axis = rot.column(0).perp(&m.column(0)) + rot.column(1).perp(&m.column(1));
+            let denom = rot.column(0).dot(&m.column(0)) + rot.column(1).dot(&m.column(1));
 
             let angle = axis / (denom.abs() + N::default_epsilon());
             if angle.abs() > eps {
@@ -192,7 +194,6 @@ impl<N: RealField> Rotation2<N> {
         other * self.inverse()
     }
 
-
     /// Ensure this rotation is an orthonormal rotation matrix. This is useful when repeated
     /// computations might cause the matrix from progressively not being orthonormal anymore.
     #[inline]
@@ -202,7 +203,6 @@ impl<N: RealField> Rotation2<N> {
 
         *self = Self::from_matrix_eps(self.matrix(), N::default_epsilon(), 0, c.into())
     }
-
 
     /// Raise the quaternion to a given floating power, i.e., returns the rotation with the angle
     /// of `self` multiplied by `n`.
@@ -314,12 +314,12 @@ impl<N: RealField> Rotation3<N> {
         let mut rot = guess.into_inner();
 
         for _ in 0..max_iter {
-            let axis = rot.column(0).cross(&m.column(0)) +
-                rot.column(1).cross(&m.column(1)) +
-                rot.column(2).cross(&m.column(2));
-            let denom = rot.column(0).dot(&m.column(0)) +
-                rot.column(1).dot(&m.column(1)) +
-                rot.column(2).dot(&m.column(2));
+            let axis = rot.column(0).cross(&m.column(0))
+                + rot.column(1).cross(&m.column(1))
+                + rot.column(2).cross(&m.column(2));
+            let denom = rot.column(0).dot(&m.column(0))
+                + rot.column(1).dot(&m.column(1))
+                + rot.column(2).dot(&m.column(2));
 
             let axisangle = axis / (denom.abs() + N::default_epsilon());
 
@@ -528,7 +528,7 @@ impl<N: RealField> Rotation3<N> {
     }
 
     /// Deprecated: Use [Rotation3::face_towards] instead.
-    #[deprecated(note="renamed to `face_towards`")]
+    #[deprecated(note = "renamed to `face_towards`")]
     pub fn new_observer_frames<SB, SC>(dir: &Vector<N, U3, SB>, up: &Vector<N, U3, SC>) -> Self
     where
         SB: Storage<N, U3>,

@@ -1,6 +1,7 @@
-use crate::base::allocator::Allocator;
-use crate::base::{DefaultAllocator, DimName, Scalar};
-use crate::geometry::{Point, Point2, Point3};
+use crate::{
+    base::{allocator::Allocator, DefaultAllocator, DimName, Scalar},
+    geometry::{Point, Point2, Point3},
+};
 use typenum::{self, Cmp, Greater};
 
 macro_rules! impl_swizzle {

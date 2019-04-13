@@ -24,7 +24,7 @@ fn orthographic_inverse() {
 mod quickcheck_tests {
     use na::{Orthographic3, Perspective3, Point3};
 
-    quickcheck!{
+    quickcheck! {
         fn perspective_project_unproject(pt: Point3<f64>) -> bool {
             let proj = Perspective3::new(800.0 / 600.0, 3.14 / 2.0, 1.0, 1000.0);
 

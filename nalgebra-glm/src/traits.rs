@@ -2,8 +2,7 @@ use approx::AbsDiffEq;
 use num::{Bounded, FromPrimitive, Signed};
 
 use alga::general::{Lattice, Ring};
-use na::allocator::Allocator;
-use na::{DimMin, DimName, Scalar, U1};
+use na::{allocator::Allocator, DimMin, DimName, Scalar, U1};
 
 /// A type-level number representing a vector, matrix row, or matrix column, dimension.
 pub trait Dimension: DimName + DimMin<Self, Output = Self> {}
@@ -17,7 +16,8 @@ pub trait Number:
 
 impl<T: Scalar + Ring + Lattice + AbsDiffEq<Epsilon = Self> + Signed + FromPrimitive + Bounded>
     Number for T
-{}
+{
+}
 
 #[doc(hidden)]
 pub trait Alloc<N: Scalar, R: Dimension, C: Dimension = U1>:
@@ -76,4 +76,5 @@ impl<N: Scalar, R: Dimension, C: Dimension, T> Alloc<N, R, C> for T where T: All
         + Allocator<i16, C>
         + Allocator<(usize, usize), R>
         + Allocator<(usize, usize), C>
-{}
+{
+}

@@ -9,6 +9,5 @@ mod matrix_slice;
 mod mint;
 mod serde;
 
-
 #[cfg(feature = "arbitrary")]
 pub mod helper;

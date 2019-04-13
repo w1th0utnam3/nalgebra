@@ -3,9 +3,11 @@ use std::ops::{Div, DivAssign, Index, IndexMut, Mul, MulAssign};
 
 use alga::general::{ClosedAdd, ClosedMul, RealField, SubsetOf};
 
-use crate::base::allocator::Allocator;
-use crate::base::dimension::{DimName, DimNameAdd, DimNameSum, U1, U3, U4};
-use crate::base::{DefaultAllocator, MatrixN, Scalar, VectorN};
+use crate::base::{
+    allocator::Allocator,
+    dimension::{DimName, DimNameAdd, DimNameSum, U1, U3, U4},
+    DefaultAllocator, MatrixN, Scalar, VectorN,
+};
 
 use crate::geometry::{
     Isometry, Point, Rotation, Similarity, SubTCategoryOf, SuperTCategoryOf, TAffine, TCategory,
