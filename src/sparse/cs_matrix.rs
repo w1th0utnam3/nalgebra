@@ -105,13 +105,14 @@ pub trait CsStorageMut<N, R, C = U1>:
 
 /// A storage of column-compressed sparse matrix based on a Vec.
 #[derive(Clone, Debug, PartialEq)]
+#[allow(missing_docs)]
 pub struct CsVecStorage<N: Scalar, R: Dim, C: Dim>
 where DefaultAllocator: Allocator<usize, C>
 {
-    pub(crate) shape: (R, C),
-    pub(crate) p: VectorN<usize, C>,
-    pub(crate) i: Vec<usize>,
-    pub(crate) vals: Vec<N>,
+    pub shape: (R, C),
+    pub p: VectorN<usize, C>,
+    pub i: Vec<usize>,
+    pub vals: Vec<N>,
 }
 
 impl<N: Scalar, R: Dim, C: Dim> CsVecStorage<N, R, C>
