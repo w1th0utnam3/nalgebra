@@ -13,7 +13,7 @@ use alga::general::RealField;
 
 use crate::base::dimension::U3;
 use crate::base::storage::Storage;
-use crate::base::{Unit, Vector, Vector3, Vector4, Matrix3};
+use crate::base::{Unit, Vector, Vector3, Vector4, Matrix3, Matrix4};
 
 use crate::geometry::{Quaternion, Rotation3, UnitQuaternion};
 
@@ -675,6 +675,58 @@ impl<N: RealField> UnitQuaternion<N> {
     pub fn from_scaled_axis_eps<SB>(axisangle: Vector<N, U3, SB>, eps: N) -> Self
     where SB: Storage<N, U3> {
         Self::new_eps(axisangle, eps)
+    }
+
+    /// Create the mean unit quaternion from a data structure implementing IntoIterator
+    /// returning unit quaternions.
+    ///
+    /// The method will panic if the iterator does not return any quaternions.
+    ///
+    /// Algorithm from: Oshman, Yaakov, and Avishy Carmi. "Attitude estimation from vector
+    /// observations using a genetic-algorithm-embedded quaternion particle filter." Journal of
+    /// Guidance, Control, and Dynamics 29.4 (2006): 879-891.
+    /// 
+    /// # Example
+    /// ```
+    /// # #[macro_use] extern crate approx;
+    /// # use std::f32;
+    /// # use nalgebra::{UnitQuaternion};
+    /// let q1 = UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0);
+    /// let q2 = UnitQuaternion::from_euler_angles(-0.1, 0.0, 0.0);
+    /// let q3 = UnitQuaternion::from_euler_angles(0.1, 0.0, 0.0);
+    ///
+    /// let quat_vec = vec![q1, q2, q3];
+    /// let q_mean = UnitQuaternion::mean_of(quat_vec);
+    ///
+    /// let euler_angles_mean = q_mean.euler_angles();
+    /// assert_relative_eq!(euler_angles_mean.0, 0.0, epsilon = 1.0e-7)
+    /// ```
+    #[inline]
+    pub fn mean_of(unit_quaternions: impl IntoIterator<Item = Self>) -> Self {
+        let quaternions_matrix: Matrix4<N> = unit_quaternions
+            .into_iter()
+            .map(|q| q.as_vector() * q.as_vector().transpose())
+            .sum();
+
+        assert!(!quaternions_matrix.is_zero());
+        
+        let eigen_matrix = quaternions_matrix
+            .try_symmetric_eigen(N::RealField::default_epsilon(), 10)
+            .expect("Quaternions matrix could not be diagonalized. This behavior should not be possible.");
+
+        let max_eigenvalue_index = eigen_matrix
+            .eigenvalues
+            .iter()
+            .position(|v| *v == eigen_matrix.eigenvalues.max())
+            .unwrap();
+
+        let max_eigenvector = eigen_matrix.eigenvectors.column(max_eigenvalue_index);
+        UnitQuaternion::from_quaternion(Quaternion::new(
+            max_eigenvector[0],
+            max_eigenvector[1],
+            max_eigenvector[2],
+            max_eigenvector[3],
+        ))
     }
 }
 
