@@ -4,6 +4,9 @@ use crate::ops::Op;
 use crate::pattern::SparsityPattern;
 use core::{iter, mem};
 use nalgebra::{DMatrix, DMatrixSlice, DMatrixSliceMut, RealField};
+#[cfg(feature = "serde-serialize")]
+use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
+use std::borrow::Cow;
 use std::fmt::{Display, Formatter};
 
 /// A symbolic sparse Cholesky factorization of a CSC matrix.
@@ -48,6 +51,81 @@ impl CscSymbolicCholesky {
     }
 }
 
+#[cfg(feature = "serde-serialize")]
+#[derive(Serialize, Deserialize)]
+struct CscSymbolicCholeskySerializationHelper<'a> {
+    m_pattern: Cow<'a, SparsityPattern>,
+    l_pattern: Cow<'a, SparsityPattern>,
+    u_pattern: Cow<'a, SparsityPattern>,
+}
+
+#[cfg(feature = "serde-serialize")]
+impl Serialize for CscSymbolicCholesky {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        CscSymbolicCholeskySerializationHelper {
+            m_pattern: Cow::Borrowed(&self.m_pattern),
+            l_pattern: Cow::Borrowed(&self.l_pattern),
+            u_pattern: Cow::Borrowed(&self.u_pattern),
+        }
+        .serialize(serializer)
+    }
+}
+
+#[cfg(feature = "serde-serialize")]
+impl<'de> Deserialize<'de> for CscSymbolicCholesky {
+    fn deserialize<D>(deserializer: D) -> Result<CscSymbolicCholesky, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let de = CscSymbolicCholeskySerializationHelper::deserialize(deserializer)?;
+
+        if let CscSymbolicCholeskySerializationHelper {
+            m_pattern: Cow::Owned(m_pattern),
+            l_pattern: Cow::Owned(l_pattern),
+            u_pattern: Cow::Owned(u_pattern),
+        } = de
+        {
+            let all_patterns_square = m_pattern.major_dim() == m_pattern.minor_dim()
+                && l_pattern.major_dim() == l_pattern.minor_dim()
+                && u_pattern.major_dim() == u_pattern.minor_dim();
+
+            if !all_patterns_square {
+                return Err(de::Error::custom(
+                    "one of the cholesky factors is not square",
+                ));
+            }
+
+            let all_dim_identical = m_pattern.major_dim() == l_pattern.major_dim()
+                && m_pattern.major_dim() == u_pattern.major_dim();
+
+            if !all_dim_identical {
+                return Err(de::Error::custom(
+                    "the dimensions of the cholesky factors are not identical",
+                ));
+            }
+
+            /*
+            if spmm_csc_pattern(&l_pattern, &u_pattern) != m_pattern {
+                return Err(de::Error::custom(
+                    "the cholesky factors do not match (i.e. M != L*U)",
+                ));
+            }
+            */
+
+            Ok(Self {
+                m_pattern,
+                l_pattern,
+                u_pattern,
+            })
+        } else {
+            Err(de::Error::custom("internal error"))
+        }
+    }
+}
+
 /// A sparse Cholesky factorization `A = L L^T` of a [`CscMatrix`].
 ///
 /// The factor `L` is a sparse, lower-triangular matrix. See the article on [Wikipedia] for
@@ -61,7 +139,7 @@ impl CscSymbolicCholesky {
 /// [`CSparse`]: https://epubs.siam.org/doi/book/10.1137/1.9780898718881
 /// [Wikipedia]: https://en.wikipedia.org/wiki/Cholesky_decomposition
 // TODO: We should probably implement PartialEq/Eq, but in that case we'd probably need a
-// custom implementation, due to the need to exclude the workspace arrays
+//  custom implementation, due to the need to exclude the workspace arrays
 #[derive(Debug, Clone)]
 pub struct CscCholesky<T> {
     // Pattern of the original matrix
@@ -288,6 +366,119 @@ impl<T: RealField> CscCholesky<T> {
         // Solve L^T X = Y
         let mut x = y;
         spsolve_csc_lower_triangular(Op::Transpose(self.l()), &mut x).expect(expect_msg);
+    }
+
+    /// Returns a copy of the symbolic part of this factorization.
+    pub fn symbolic_factorization(&self) -> CscSymbolicCholesky {
+        CscSymbolicCholesky {
+            m_pattern: self.m_pattern.clone(),
+            l_pattern: self.l_factor.pattern().clone(),
+            u_pattern: self.u_pattern.clone(),
+        }
+    }
+
+    /// Transforms this full Cholesky factorization into its symbolic part, discarding the numerical values.
+    pub fn into_symbolic_factorization(self) -> CscSymbolicCholesky {
+        CscSymbolicCholesky {
+            m_pattern: self.m_pattern,
+            l_pattern: self.l_factor.into_pattern_and_values().0,
+            u_pattern: self.u_pattern,
+        }
+    }
+}
+
+#[cfg(feature = "serde-serialize")]
+#[derive(Serialize, Deserialize)]
+struct CscCholeskySerializationHelper<'a, T: Clone> {
+    m_pattern: Cow<'a, SparsityPattern>,
+    l_factor: Cow<'a, CscMatrix<T>>,
+    u_pattern: Cow<'a, SparsityPattern>,
+    work_x: Cow<'a, Vec<T>>,
+    work_c: Cow<'a, Vec<usize>>,
+}
+
+#[cfg(feature = "serde-serialize")]
+impl<T> Serialize for CscCholesky<T>
+where
+    T: Clone + Serialize,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        CscCholeskySerializationHelper {
+            m_pattern: Cow::Borrowed(&self.m_pattern),
+            l_factor: Cow::Borrowed(&self.l_factor),
+            u_pattern: Cow::Borrowed(&self.u_pattern),
+            work_x: Cow::Borrowed(&self.work_x),
+            work_c: Cow::Borrowed(&self.work_c),
+        }
+        .serialize(serializer)
+    }
+}
+
+#[cfg(feature = "serde-serialize")]
+impl<'de, T> Deserialize<'de> for CscCholesky<T>
+where
+    T: Clone + Deserialize<'de>,
+{
+    fn deserialize<D>(deserializer: D) -> Result<CscCholesky<T>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let de = CscCholeskySerializationHelper::deserialize(deserializer)?;
+
+        if let CscCholeskySerializationHelper {
+            m_pattern: Cow::Owned(m_pattern),
+            l_factor: Cow::Owned(l_factor),
+            u_pattern: Cow::Owned(u_pattern),
+            work_x: Cow::Owned(work_x),
+            work_c: Cow::Owned(work_c),
+        } = de
+        {
+            let all_square = m_pattern.major_dim() == m_pattern.minor_dim()
+                && l_factor.nrows() == l_factor.ncols()
+                && u_pattern.major_dim() == u_pattern.minor_dim();
+
+            if !all_square {
+                return Err(de::Error::custom(
+                    "one of the cholesky factors is not square",
+                ));
+            }
+
+            let all_same = m_pattern.major_dim() == l_factor.ncols()
+                && m_pattern.major_dim() == u_pattern.major_dim();
+
+            if !all_same {
+                return Err(de::Error::custom(
+                    "the dimensions of the cholesky factors are not identical",
+                ));
+            }
+
+            if work_x.len() != l_factor.nrows() {
+                return Err(de::Error::custom(
+                    "the dimensions of the work arrays are not correct",
+                ));
+            }
+
+            /*
+            if spmm_csc_pattern(&l_factor.pattern(), &u_pattern) != m_pattern {
+                return Err(de::Error::custom(
+                    "the cholesky factors do not match (i.e. M != L*U)",
+                ));
+            }
+             */
+
+            Ok(Self {
+                m_pattern,
+                l_factor,
+                u_pattern,
+                work_x,
+                work_c,
+            })
+        } else {
+            Err(de::Error::custom("internal error"))
+        }
     }
 }
 

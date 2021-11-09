@@ -11,17 +11,21 @@ use nalgebra_sparse::csc::CscMatrix;
 use nalgebra_sparse::csr::CsrMatrix;
 use nalgebra_sparse::pattern::SparsityPattern;
 
+use nalgebra::{Matrix5, Vector5};
+use nalgebra_sparse::factorization::{CscCholesky, CscSymbolicCholesky};
 use proptest::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::common::{csc_strategy, csr_strategy};
 
-fn json_roundtrip<T: Serialize + for<'a> Deserialize<'a>>(csr: &T) -> T {
-    let serialized = serde_json::to_string(csr).unwrap();
+fn json_roundtrip<T: Serialize + for<'a> Deserialize<'a>>(value: &T) -> T {
+    let serialized = serde_json::to_string(value).unwrap();
+    println!("{}", serialized);
     let deserialized: T = serde_json::from_str(&serialized).unwrap();
     deserialized
 }
 
+/*
 #[test]
 fn pattern_roundtrip() {
     {
@@ -202,4 +206,59 @@ proptest! {
     fn csr_roundtrip_proptest(csr in csr_strategy()) {
         prop_assert_eq!(json_roundtrip(&csr), csr);
     }
+}
+*/
+
+#[test]
+fn csc_cholesky_roundtrip() {
+    let mut a = Matrix5::new(
+        40.0, 0.0, 0.0, 0.0, 0.0, 2.0, 60.0, 0.0, 0.0, 0.0, 1.0, 0.0, 11.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 50.0, 0.0, 1.0, 0.0, 0.0, 4.0, 10.0,
+    );
+    a.fill_upper_triangle_with_lower_triangle();
+    test_cholesky(&CscMatrix::from(&a));
+
+    let a = Matrix5::from_diagonal(&Vector5::new(40.0, 60.0, 11.0, 50.0, 10.0));
+    test_cholesky(&CscMatrix::from(&a));
+
+    let mut a = Matrix5::new(
+        40.0, 0.0, 0.0, 0.0, 0.0, 2.0, 60.0, 0.0, 0.0, 0.0, 1.0, 0.0, 11.0, 0.0, 0.0, 1.0, 0.0,
+        0.0, 50.0, 0.0, 0.0, 0.0, 0.0, 4.0, 10.0,
+    );
+    a.fill_upper_triangle_with_lower_triangle();
+    test_cholesky(&CscMatrix::from(&a));
+
+    let mut a = Matrix5::new(
+        2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 1.0, 1.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        2.0, 0.0, 1.0, 1.0, 0.0, 0.0, 2.0,
+    );
+    a.fill_upper_triangle_with_lower_triangle();
+    test_cholesky(&CscMatrix::from(&a));
+}
+
+fn test_cholesky(csc: &CscMatrix<f64>) {
+    let sym_chol_csc = CscSymbolicCholesky::factor(csc.pattern().clone());
+    let sym_chol_csc_deserialized = json_roundtrip(&sym_chol_csc);
+    assert_eq!(
+        sym_chol_csc, sym_chol_csc_deserialized,
+        "symbolic factorization has to match"
+    );
+
+    let chol_csc = CscCholesky::factor(&csc).unwrap();
+    let chol_csc_deserialized = json_roundtrip(&chol_csc);
+    assert_eq!(
+        chol_csc.symbolic_factorization(),
+        chol_csc_deserialized.symbolic_factorization(),
+        "symbolic part of full factorization has to match"
+    );
+    assert_eq!(
+        chol_csc.l().pattern(),
+        chol_csc_deserialized.l().pattern(),
+        "pattern of l factor has to match"
+    );
+    assert_eq!(
+        chol_csc.l().values(),
+        chol_csc_deserialized.l().values(),
+        "values of l factor have to match"
+    );
 }
