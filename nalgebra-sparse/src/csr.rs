@@ -197,14 +197,14 @@ impl<T> CsrMatrix<T> {
         if col_indices.len() != values.len() {
             return Err(SparseFormatError::from_kind_and_msg(
                 SparseFormatErrorKind::InvalidStructure,
-                "Number of values and column indices must be the same",
+                "number of values and column indices must be the same",
             ));
         }
 
         if row_offsets.len() == 0 {
             return Err(SparseFormatError::from_kind_and_msg(
                 SparseFormatErrorKind::InvalidStructure,
-                "Number of offsets should be greater than 0",
+                "number of offsets should be greater than 0",
             ));
         }
 
@@ -213,7 +213,7 @@ impl<T> CsrMatrix<T> {
             if next_offset > count {
                 return Err(SparseFormatError::from_kind_and_msg(
                     SparseFormatErrorKind::InvalidStructure,
-                    "No row offset should be greater than the number of column indices",
+                    "no row offset should be greater than the number of column indices",
                 ));
             }
             if offset > next_offset {
@@ -257,7 +257,7 @@ impl<T> CsrMatrix<T> {
         } else {
             Err(SparseFormatError::from_kind_and_msg(
                 SparseFormatErrorKind::InvalidStructure,
-                "Number of values and column indices must be the same",
+                "number of values and column indices must be the same",
             ))
         }
     }
@@ -609,25 +609,25 @@ fn pattern_format_error_to_csr_error(err: SparsityPatternFormatError) -> SparseF
     match err {
         InvalidOffsetArrayLength => E::from_kind_and_msg(
             K::InvalidStructure,
-            "Length of row offset array is not equal to nrows + 1.",
+            "length of row offset array is not equal to nrows + 1",
         ),
         InvalidOffsetFirstLast => E::from_kind_and_msg(
             K::InvalidStructure,
-            "First or last row offset is inconsistent with format specification.",
+            "first or last row offset is inconsistent with format specification",
         ),
         NonmonotonicOffsets => E::from_kind_and_msg(
             K::InvalidStructure,
-            "Row offsets are not monotonically increasing.",
+            "row offsets are not monotonically increasing",
         ),
         NonmonotonicMinorIndices => E::from_kind_and_msg(
             K::InvalidStructure,
-            "Column indices are not monotonically increasing (sorted) within each row.",
+            "column indices are not monotonically increasing (sorted) within each row",
         ),
         MinorIndexOutOfBounds => {
-            E::from_kind_and_msg(K::IndexOutOfBounds, "Column indices are out of bounds.")
+            E::from_kind_and_msg(K::IndexOutOfBounds, "column indices are out of bounds")
         }
         PatternDuplicateEntry => {
-            E::from_kind_and_msg(K::DuplicateEntry, "Matrix data contains duplicate entries.")
+            E::from_kind_and_msg(K::DuplicateEntry, "matrix data contains duplicate entries")
         }
     }
 }

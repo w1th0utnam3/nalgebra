@@ -254,7 +254,8 @@ impl SparsityPattern {
             new_offsets,
             new_indices,
         )
-        .expect("Internal error: Transpose should never fail.")
+        .expect("internal error: Transpose should never fail")
+        .expect("internal error: transpose should never fail")
     }
 }
 
@@ -314,24 +315,24 @@ impl fmt::Display for SparsityPatternFormatError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             SparsityPatternFormatError::InvalidOffsetArrayLength => {
-                write!(f, "Length of offset array is not equal to (major_dim + 1).")
+                write!(f, "length of offset array is not equal to (major_dim + 1)")
             }
             SparsityPatternFormatError::InvalidOffsetFirstLast => {
-                write!(f, "First or last offset is incompatible with format.")
+                write!(f, "first or last offset is incompatible with format")
             }
             SparsityPatternFormatError::NonmonotonicOffsets => {
-                write!(f, "Offsets are not monotonically increasing.")
+                write!(f, "offsets are not monotonically increasing")
             }
             SparsityPatternFormatError::MinorIndexOutOfBounds => {
-                write!(f, "A minor index is out of bounds.")
+                write!(f, "a minor index is out of bounds")
             }
             SparsityPatternFormatError::DuplicateEntry => {
-                write!(f, "Input data contains duplicate entries.")
+                write!(f, "input data contains duplicate entries")
             }
             SparsityPatternFormatError::NonmonotonicMinorIndices => {
                 write!(
                     f,
-                    "Minor indices are not monotonically increasing within each lane."
+                    "minor indices are not monotonically increasing within each lane"
                 )
             }
         }
