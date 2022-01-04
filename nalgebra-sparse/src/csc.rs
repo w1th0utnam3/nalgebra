@@ -551,6 +551,9 @@ fn pattern_format_error_to_csc_error(err: SparsityPatternFormatError) -> SparseF
             K::InvalidStructure,
             "row indices are not monotonically increasing (sorted) within each column",
         ),
+        MajorIndexOutOfBounds => {
+            E::from_kind_and_msg(K::IndexOutOfBounds, "Column indices are out of bounds.")
+        }
         MinorIndexOutOfBounds => {
             E::from_kind_and_msg(K::IndexOutOfBounds, "row indices are out of bounds")
         }
